@@ -27,10 +27,7 @@ body { font-family:'Montserrat',sans-serif; background:var(--gray-soft); color:v
 .nav-item { display:flex; align-items:center; gap:12px; padding:10px 20px; cursor:pointer; font-size:0.82rem; font-weight:500; color:#4a5a7b; transition:all 0.2s; text-decoration:none; border-left:3px solid transparent; }
 .nav-item:hover { background:var(--gray-soft); color:var(--navy); }
 .nav-item.active { background:rgba(46,125,247,0.08); color:var(--accent); border-left-color:var(--accent); font-weight:600; }
-.nav-item.sub { padding-left:36px; font-size:0.77rem; }
-.nav-item.sub.active { background:rgba(46,125,247,0.06); color:var(--accent); }
 .nav-section { padding:6px 20px 4px; font-size:0.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; }
-.nav-expand { font-size:0.65rem; margin-left:auto; color:var(--text-muted); }
 .nav-bottom { padding:16px 0; border-top:1px solid var(--gray-border); }
 
 /* ─── MAIN ─── */
@@ -101,7 +98,6 @@ body { font-family:'Montserrat',sans-serif; background:var(--gray-soft); color:v
 /* ─── VEHICLE BREAKDOWN ─── */
 .breakdown-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
 .breakdown-card { background:white; border-radius:12px; padding:14px 12px; border:1px solid var(--gray-border); text-align:center; cursor:pointer; transition:all .2s; position:relative; overflow:hidden; }
-.breakdown-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
 .breakdown-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.08); }
 .bc-icon { font-size:1.5rem; margin-bottom:6px; }
 .bc-name { font-size:0.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px; }
@@ -139,12 +135,6 @@ tr:hover td { background:#f8f9fd; }
 .insight-text { font-size:.78rem; color:#3a4a6b; font-weight:500; line-height:1.5; }
 .insight-val { font-size:.72rem; font-weight:700; color:var(--accent); margin-top:2px; }
 
-/* ─── TOAST ─── */
-.toast { position:fixed; bottom:24px; right:24px; background:var(--navy); color:white; padding:11px 18px; border-radius:12px; font-size:.8rem; font-weight:600; display:flex; align-items:center; gap:9px; box-shadow:0 8px 30px rgba(0,0,0,.18); z-index:9999; transform:translateY(70px); opacity:0; transition:all .32s cubic-bezier(.34,1.56,.64,1); }
-.toast.show { transform:translateY(0); opacity:1; }
-.toast.success { background:#16a34a; }
-.toast.warn { background:#d97706; }
-
 /* ─── DATA MGMT ─── */
 .data-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .form-group { margin-bottom:12px; }
@@ -161,8 +151,16 @@ tr:hover td { background:#f8f9fd; }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
 .tbl-action-btn { width:27px; height:27px; border-radius:6px; border:1.5px solid var(--gray-border); background:white; cursor:pointer; font-size:.7rem; transition:all .18s; display:inline-flex; align-items:center; justify-content:center; }
-.tbl-action-btn.edit:hover { border-color:var(--accent); color:var(--accent); }
-.tbl-action-btn.del:hover  { border-color:var(--red);   color:var(--red);   }
+.tbl-action-btn.del:hover { border-color:var(--red); color:var(--red); }
+
+/* ─── EQUIPMENT ─── */
+.eq-info-box { background:linear-gradient(135deg,rgba(46,125,247,.05),rgba(139,92,246,.05)); border:1.5px solid rgba(46,125,247,.15); border-radius:10px; padding:14px 16px; margin-bottom:16px; }
+.eq-fleet-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+.eq-fleet-card { background:var(--gray-soft); border-radius:10px; padding:12px; text-align:center; border:1.5px solid var(--gray-border); transition:all .2s; }
+.eq-fleet-card:hover { border-color:var(--accent); background:rgba(46,125,247,.04); }
+.eq-fleet-icon { font-size:1.6rem; margin-bottom:4px; }
+.eq-fleet-label { font-size:.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; }
+.eq-fleet-count { font-size:1.1rem; font-weight:800; color:var(--navy); }
 
 /* ─── MODAL ─── */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(13,31,60,.45); z-index:999; align-items:center; justify-content:center; backdrop-filter:blur(3px); }
@@ -173,6 +171,13 @@ tr:hover td { background:#f8f9fd; }
 .modal-footer { display:flex; gap:10px; margin-top:18px; }
 .btn-secondary { padding:9px 18px; border-radius:8px; font-size:.8rem; font-weight:600; cursor:pointer; border:1.5px solid var(--gray-border); background:white; color:var(--navy); font-family:'Montserrat',sans-serif; }
 .btn-danger { flex:1; padding:9px; border-radius:8px; font-size:.8rem; font-weight:700; cursor:pointer; border:none; background:var(--red); color:white; font-family:'Montserrat',sans-serif; }
+
+/* ─── TOAST ─── */
+.toast { position:fixed; bottom:24px; right:24px; background:var(--navy); color:white; padding:11px 18px; border-radius:12px; font-size:.8rem; font-weight:600; display:flex; align-items:center; gap:9px; box-shadow:0 8px 30px rgba(0,0,0,.18); z-index:9999; transform:translateY(70px); opacity:0; transition:all .32s cubic-bezier(.34,1.56,.64,1); pointer-events:none; }
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.success { background:#16a34a; }
+.toast.warn { background:#d97706; }
+.toast.error { background:#dc2626; }
 
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:transparent; }
@@ -187,15 +192,15 @@ tr:hover td { background:#f8f9fd; }
   <div class="sidebar-logo"><div class="logo-box">VPEI</div></div>
   <nav class="nav-items">
     <div class="nav-section">Menu chính</div>
-    <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-pie" style="width:16px;color:var(--text-muted)"></i> Dashboard</a>
-    <a href="scope_01.html" class="nav-item"><i class="fa-solid fa-industry" style="width:16px;color:var(--text-muted)"></i> Scope 1</a>
-    <a href="scope_02.html" class="nav-item"><i class="fa-solid fa-bolt" style="width:16px;color:var(--text-muted)"></i> Scope 2</a>
-    <a href="scope_03.html" class="nav-item"><i class="fa-solid fa-ship" style="width:16px;color:var(--text-muted)"></i> Scope 3</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-chart-pie" style="width:16px;color:var(--text-muted)"></i> Dashboard</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-industry" style="width:16px;color:var(--text-muted)"></i> Scope 1</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-bolt" style="width:16px;color:var(--text-muted)"></i> Scope 2</a>
+    <a href="#" class="nav-item active"><i class="fa-solid fa-ship" style="width:16px;color:var(--accent)"></i> Scope 3</a>
     <div class="nav-section" style="margin-top:10px">Báo cáo</div>
-    <a href="reports.html" class="nav-item"><i class="fa-solid fa-file-lines" style="width:16px;color:var(--text-muted)"></i> Reports</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-file-lines" style="width:16px;color:var(--text-muted)"></i> Reports</a>
   </nav>
   <div class="nav-bottom">
-    <a href="settings.html" class="nav-item active"><i class="fa-solid fa-gear" style="width:16px;color:var(--accent)"></i> Settings</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-gear" style="width:16px;color:var(--text-muted)"></i> Settings</a>
   </div>
 </div>
 
@@ -224,14 +229,17 @@ tr:hover td { background:#f8f9fd; }
 
   <!-- SUB-NAV -->
   <div class="subnav">
-    <div class="subnav-tab active" id="tab-btn-overview" onclick="setMainTab('overview',null)">
+    <div class="subnav-tab active" id="tab-btn-overview" onclick="setMainTab('overview')">
       <i class="fa-solid fa-chart-pie"></i> Tổng quan
     </div>
-    <div class="subnav-tab" id="tab-btn-manage" onclick="setMainTab('manage',null)">
+    <div class="subnav-tab" id="tab-btn-manage" onclick="setMainTab('manage')">
       <i class="fa-solid fa-table"></i> Quản lý dữ liệu hoạt động
     </div>
-    <div class="subnav-tab" id="tab-btn-shap" onclick="setMainTab('shap',null)">
+    <div class="subnav-tab" id="tab-btn-shap" onclick="setMainTab('shap')">
       <i class="fa-solid fa-flask"></i> Phân tích &amp; SHAP
+    </div>
+    <div class="subnav-tab" id="tab-btn-equipment" onclick="setMainTab('equipment')">
+      <i class="fa-solid fa-truck-moving"></i> Thêm thiết bị
     </div>
   </div>
 
@@ -240,8 +248,6 @@ tr:hover td { background:#f8f9fd; }
 
     <!-- ══════════ OVERVIEW TAB ══════════ -->
     <div id="page-overview">
-
-      <!-- VEHICLE FILTER TABS -->
       <div class="vehicle-tabs" id="vehicleTabs">
         <button class="vtab active" onclick="setVehicle('all',this)" data-v="all">
           <span class="vtab-dot" style="background:var(--navy)"></span> Tất cả
@@ -263,7 +269,6 @@ tr:hover td { background:#f8f9fd; }
         </button>
       </div>
 
-      <!-- KPI -->
       <div class="kpi-row">
         <div class="kpi-card" onclick="toggleKpiDetail('total')">
           <div class="kpi-icon" style="background:rgba(46,125,247,.1)"><i class="fa-solid fa-cloud" style="color:var(--accent)"></i></div>
@@ -291,7 +296,6 @@ tr:hover td { background:#f8f9fd; }
         </div>
       </div>
 
-      <!-- KPI DETAIL CHART -->
       <div class="kpi-detail" id="kpiDetail">
         <div class="kpi-detail-header">
           <div class="kpi-detail-title" id="kpiDetailTitle">
@@ -302,18 +306,16 @@ tr:hover td { background:#f8f9fd; }
         <canvas id="kpiDetailChart" height="70"></canvas>
       </div>
 
-      <!-- BREAKDOWN CARDS -->
       <div class="breakdown-grid" id="breakdownGrid"></div>
 
-      <!-- MAIN CHARTS -->
       <div class="charts-row">
         <div class="chart-card">
           <div class="chart-title">
             <div class="chart-title-left"><i class="fa-solid fa-chart-bar" style="color:var(--accent);font-size:.75rem"></i> Phát thải theo loại phương tiện</div>
             <div class="chart-toggle">
-              <button class="ctbtn active" onclick="setBarMode('co2',this)">CO₂e</button>
-              <button class="ctbtn" onclick="setBarMode('trips',this)">Lượt</button>
-              <button class="ctbtn" onclick="setBarMode('fuel',this)">Nhiên liệu</button>
+              <button class="ctbtn active" id="bar-co2" onclick="setBarMode('co2',this)">CO₂e</button>
+              <button class="ctbtn" id="bar-trips" onclick="setBarMode('trips',this)">Lượt</button>
+              <button class="ctbtn" id="bar-fuel" onclick="setBarMode('fuel',this)">Nhiên liệu</button>
             </div>
           </div>
           <canvas id="vehicleBar" height="175"></canvas>
@@ -322,15 +324,14 @@ tr:hover td { background:#f8f9fd; }
           <div class="chart-title">
             <div class="chart-title-left"><i class="fa-solid fa-chart-line" style="color:var(--teal);font-size:.75rem"></i> Xu hướng phát thải theo tháng</div>
             <div class="chart-toggle">
-              <button class="ctbtn active" onclick="setTrendMode('all',this)">Tất cả</button>
-              <button class="ctbtn" onclick="setTrendMode('top2',this)">Top 2</button>
+              <button class="ctbtn active" id="trend-all" onclick="setTrendMode('all',this)">Tất cả</button>
+              <button class="ctbtn" id="trend-top2" onclick="setTrendMode('top2',this)">Top 2</button>
             </div>
           </div>
           <canvas id="trendLine" height="175"></canvas>
         </div>
       </div>
 
-      <!-- TABLE -->
       <div class="table-card">
         <div class="table-header">
           <span class="table-header-title"><i class="fa-solid fa-table" style="color:var(--text-muted)"></i> Bảng tổng hợp phát thải</span>
@@ -356,8 +357,6 @@ tr:hover td { background:#f8f9fd; }
     <!-- ══════════ MANAGE TAB ══════════ -->
     <div id="page-manage" class="hidden">
       <div class="data-grid">
-
-        <!-- INPUT FORM -->
         <div class="section-card">
           <div class="section-header">
             <div class="section-title"><i class="fa-solid fa-keyboard" style="color:var(--accent)"></i> Nhập dữ liệu hoạt động</div>
@@ -409,7 +408,6 @@ tr:hover td { background:#f8f9fd; }
           </div>
         </div>
 
-        <!-- SUMMARY -->
         <div class="section-card">
           <div class="section-header">
             <div class="section-title"><i class="fa-solid fa-calculator" style="color:var(--green)"></i> Kết quả tính toán tự động</div>
@@ -435,8 +433,7 @@ tr:hover td { background:#f8f9fd; }
         </div>
       </div>
 
-      <!-- RECORDS TABLE -->
-      <div class="table-card" style="margin-top:0">
+      <div class="table-card">
         <div class="table-header">
           <span class="table-header-title"><i class="fa-solid fa-database" style="color:var(--text-muted)"></i> Dữ liệu đã nhập</span>
           <div class="tbl-actions">
@@ -454,33 +451,25 @@ tr:hover td { background:#f8f9fd; }
 
     <!-- ══════════ SHAP TAB ══════════ -->
     <div id="page-shap" class="hidden">
-
       <div class="shap-grid">
-        <!-- SHAP importance bars -->
         <div class="shap-card">
           <div class="chart-title">
             <div class="chart-title-left"><i class="fa-solid fa-ranking-star" style="color:var(--amber);font-size:.75rem"></i> Mức độ ảnh hưởng (SHAP Feature Importance)</div>
           </div>
           <div id="shapBars" style="margin-top:8px"></div>
         </div>
-
-        <!-- RADAR -->
         <div class="shap-card">
           <div class="chart-title">
-            <div class="chart-title-left"><i class="fa-solid fa-chart-radar" style="color:var(--purple);font-size:.75rem"></i> Hồ sơ phát thải theo phương tiện</div>
+            <div class="chart-title-left"><i class="fa-solid fa-chart-area" style="color:var(--purple);font-size:.75rem"></i> Hồ sơ phát thải theo phương tiện</div>
           </div>
           <canvas id="radarChart" height="220"></canvas>
         </div>
-
-        <!-- SCATTER -->
         <div class="shap-card">
           <div class="chart-title">
             <div class="chart-title-left"><i class="fa-solid fa-circle-dot" style="color:var(--teal);font-size:.75rem"></i> Tiêu thụ nhiên liệu vs Phát thải</div>
           </div>
           <canvas id="scatterChart" height="200"></canvas>
         </div>
-
-        <!-- INSIGHTS -->
         <div class="shap-card">
           <div class="chart-title">
             <div class="chart-title-left"><i class="fa-solid fa-lightbulb" style="color:var(--amber);font-size:.75rem"></i> Phân tích &amp; Đề xuất tối ưu</div>
@@ -489,15 +478,200 @@ tr:hover td { background:#f8f9fd; }
         </div>
       </div>
 
-      <!-- STACKED BAR -->
-      <div class="chart-card" style="margin-top:0">
+      <div class="chart-card">
         <div class="chart-title">
           <div class="chart-title-left"><i class="fa-solid fa-layer-group" style="color:var(--accent);font-size:.75rem"></i> Phân rã phát thải theo nhân tố (Stacked Analysis)</div>
         </div>
-        <canvas id="stackedBar" height="130"></canvas>
+        <canvas id="stackedBar" height="120"></canvas>
+      </div>
+    </div><!-- /page-shap -->
+
+    <!-- ══════════ EQUIPMENT TAB ══════════ -->
+    <div id="page-equipment" class="hidden">
+      <div class="data-grid">
+
+        <!-- FORM THÊM THIẾT BỊ -->
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="fa-solid fa-truck-moving" style="color:var(--accent)"></i> Khai báo thiết bị / phương tiện mới
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="eq-info-box">
+              <div style="font-size:.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">
+                <i class="fa-solid fa-circle-info" style="margin-right:5px"></i>Hướng dẫn
+              </div>
+              <div style="font-size:.78rem;color:#3a4a6b;font-weight:500;line-height:1.6">
+                Khai báo phương tiện / thiết bị mới để hệ thống tự động tính phát thải Scope 3. Mỗi thiết bị cần có mã định danh duy nhất và hệ số phát thải (EF) tham chiếu.
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Tên thiết bị / Phương tiện <span style="color:var(--red)">*</span></label>
+                <input class="form-input" type="text" id="eq-name" placeholder="VD: Tàu Hapag-Lloyd 01">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mã định danh <span style="color:var(--red)">*</span></label>
+                <input class="form-input" type="text" id="eq-id" placeholder="VD: VPEI-CS-001">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Loại phương tiện <span style="color:var(--red)">*</span></label>
+                <select class="form-select" id="eq-type">
+                  <option value="">-- Chọn phân loại --</option>
+                  <option value="container-ship">🚢 Tàu container</option>
+                  <option value="truck">🚛 Xe container</option>
+                  <option value="barge">⛵ Xà lan</option>
+                  <option value="tugboat">🛥️ Tàu lai dắt</option>
+                  <option value="port">🏗️ Phương tiện nội bộ cảng</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Năm sản xuất</label>
+                <input class="form-input" type="number" id="eq-year" placeholder="VD: 2018" min="1990" max="2026">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Loại nhiên liệu sử dụng</label>
+                <select class="form-select" id="eq-fuel">
+                  <option>HFO (Dầu nặng)</option>
+                  <option>MGO (Dầu nhẹ)</option>
+                  <option>Diesel</option>
+                  <option>LNG</option>
+                  <option>Điện</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hệ số phát thải EF (tCO₂/tấn)</label>
+                <input class="form-input" type="number" id="eq-ef" placeholder="VD: 3.114" step="0.001">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Công suất (kW / DWT)</label>
+                <input class="form-input" type="number" id="eq-power" placeholder="VD: 12000">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Giờ hoạt động / tháng</label>
+                <input class="form-input" type="number" id="eq-hours" placeholder="VD: 720">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Ghi chú bổ sung</label>
+              <input class="form-input" type="text" id="eq-note" placeholder="Thông số kỹ thuật, tình trạng, tuyến đường vận hành...">
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:4px">
+              <button class="btn-primary" onclick="addEquipment()" style="flex:1;justify-content:center">
+                <i class="fa-solid fa-plus"></i> Thêm thiết bị
+              </button>
+              <button class="btn-secondary" onclick="clearEquipmentForm()">
+                <i class="fa-solid fa-rotate-left"></i> Làm mới
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- THỐNG KÊ ĐỘI PHƯƠNG TIỆN -->
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="fa-solid fa-warehouse" style="color:var(--green)"></i> Tổng quan đội phương tiện
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="eq-fleet-grid" id="eqFleetGrid">
+              <div class="eq-fleet-card">
+                <div class="eq-fleet-icon">🚢</div>
+                <div class="eq-fleet-label">Tàu container</div>
+                <div class="eq-fleet-count" id="eq-count-container-ship">0</div>
+              </div>
+              <div class="eq-fleet-card">
+                <div class="eq-fleet-icon">🚛</div>
+                <div class="eq-fleet-label">Xe container</div>
+                <div class="eq-fleet-count" id="eq-count-truck">0</div>
+              </div>
+              <div class="eq-fleet-card">
+                <div class="eq-fleet-icon">⛵</div>
+                <div class="eq-fleet-label">Xà lan</div>
+                <div class="eq-fleet-count" id="eq-count-barge">0</div>
+              </div>
+              <div class="eq-fleet-card">
+                <div class="eq-fleet-icon">🛥️</div>
+                <div class="eq-fleet-label">Tàu lai dắt</div>
+                <div class="eq-fleet-count" id="eq-count-tugboat">0</div>
+              </div>
+              <div class="eq-fleet-card">
+                <div class="eq-fleet-icon">🏗️</div>
+                <div class="eq-fleet-label">Nội bộ cảng</div>
+                <div class="eq-fleet-count" id="eq-count-port">0</div>
+              </div>
+              <div class="eq-fleet-card" style="border-color:var(--accent);background:rgba(46,125,247,.06)">
+                <div class="eq-fleet-icon">📊</div>
+                <div class="eq-fleet-label" style="color:var(--accent)">Tổng cộng</div>
+                <div class="eq-fleet-count" id="eq-count-total" style="color:var(--accent)">0</div>
+              </div>
+            </div>
+
+            <div style="background:var(--gray-soft);border-radius:10px;padding:14px;font-size:.78rem;color:#3a4a6b;line-height:1.7">
+              <div style="font-weight:700;color:var(--navy);margin-bottom:8px;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em">
+                <i class="fa-solid fa-info-circle" style="color:var(--accent);margin-right:5px"></i>Hệ số phát thải mặc định
+              </div>
+              <div><span style="font-weight:700">HFO:</span> 3.114 tCO₂/tấn nhiên liệu</div>
+              <div><span style="font-weight:700">MGO:</span> 3.206 tCO₂/tấn nhiên liệu</div>
+              <div><span style="font-weight:700">Diesel:</span> 2.640 tCO₂/tấn nhiên liệu</div>
+              <div><span style="font-weight:700">LNG:</span> 2.750 tCO₂/tấn nhiên liệu</div>
+              <div style="margin-top:8px;font-size:.72rem;color:var(--text-muted)">Nguồn: IMO MEPC, IPCC AR6 2023</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-    </div><!-- /page-shap -->
+      <!-- BẢNG DANH SÁCH THIẾT BỊ -->
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-header-title"><i class="fa-solid fa-list" style="color:var(--text-muted)"></i> Danh sách thiết bị đã khai báo</span>
+          <div class="tbl-actions">
+            <button class="tbl-btn" onclick="showToast('Xuất Excel...','success')">
+              <i class="fa-solid fa-file-excel" style="color:#16a34a"></i> Xuất Excel
+            </button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;max-height:300px;overflow-y:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Mã</th>
+                <th>Tên phương tiện</th>
+                <th>Loại</th>
+                <th>Năm SX</th>
+                <th>Nhiên liệu</th>
+                <th>EF (tCO₂/tấn)</th>
+                <th>Công suất</th>
+                <th>Giờ HĐ/tháng</th>
+                <th style="text-align:center">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="equipmentTableBody">
+              <tr>
+                <td colspan="9" style="text-align:center;color:var(--text-muted);padding:24px;font-size:.8rem">
+                  <i class="fa-solid fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;opacity:.3"></i>
+                  Chưa có thiết bị nào. Hãy khai báo thiết bị đầu tiên ở form bên trên.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /page-equipment -->
 
   </div><!-- /content -->
 </div><!-- /main -->
@@ -514,33 +688,37 @@ tr:hover td { background:#f8f9fd; }
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div id="toast" class="toast">
+  <i id="toast-icon" class="fa-solid fa-check-circle"></i>
+  <span id="toast-text">Thành công!</span>
+</div>
 
 <script>
 // ─── DATA ─────────────────────────────────────────────────
 const VHCL = [
-  { key:'container-ship', label:'Tàu container',        icon:'🚢', color:'#2e7df7', ef:3.114, unit:'tấn HFO', trips:42,  consumption:1850, fuel:'HFO' },
-  { key:'truck',          label:'Xe container',         icon:'🚛', color:'#0ea5e9', ef:2.640, unit:'L Diesel', trips:1240,consumption:48000,fuel:'Diesel' },
-  { key:'barge',          label:'Xà lan',               icon:'⛵', color:'#22c55e', ef:3.206, unit:'tấn MGO',  trips:88,  consumption:620,  fuel:'MGO' },
-  { key:'tugboat',        label:'Tàu lai dắt',          icon:'🛥️', color:'#f59e0b', ef:3.114, unit:'tấn HFO', trips:310, consumption:280,  fuel:'HFO' },
-  { key:'port',           label:'Phương tiện nội bộ',   icon:'🏗️', color:'#8b5cf6', ef:2.640, unit:'L Diesel', trips:2800,consumption:32000,fuel:'Diesel' },
+  { key:'container-ship', label:'Tàu container',      icon:'🚢', color:'#2e7df7', ef:3.114, unit:'tấn HFO', trips:42,   consumption:1850,  fuel:'HFO' },
+  { key:'truck',          label:'Xe container',       icon:'🚛', color:'#0ea5e9', ef:2.640, unit:'L Diesel', trips:1240, consumption:48000, fuel:'Diesel' },
+  { key:'barge',          label:'Xà lan',             icon:'⛵', color:'#22c55e', ef:3.206, unit:'tấn MGO',  trips:88,   consumption:620,   fuel:'MGO' },
+  { key:'tugboat',        label:'Tàu lai dắt',        icon:'🛥️', color:'#f59e0b', ef:3.114, unit:'tấn HFO', trips:310,  consumption:280,   fuel:'HFO' },
+  { key:'port',           label:'Phương tiện nội bộ', icon:'🏗️', color:'#8b5cf6', ef:2.640, unit:'L Diesel', trips:2800, consumption:32000, fuel:'Diesel' },
 ];
 
 const MONTHS = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
 const TREND_DATA = {
   'container-ship':[180,210,195,220,240,260,230,270,250,280,240,310],
   'truck':          [85, 90, 88, 95, 100,110, 98,115,105,120,100,130],
-  'barge':          [55, 60, 58, 62, 68, 72,  65, 78, 70, 80, 68, 88],
-  'tugboat':        [24, 26, 25, 27, 29, 31,  28, 33, 30, 34, 29, 37],
-  'port':           [42, 44, 43, 46, 48, 52,  47, 55, 50, 57, 48, 62],
+  'barge':          [55, 60, 58, 62,  68, 72, 65, 78, 70, 80, 68, 88],
+  'tugboat':        [24, 26, 25, 27,  29, 31, 28, 33, 30, 34, 29, 37],
+  'port':           [42, 44, 43, 46,  48, 52, 47, 55, 50, 57, 48, 62],
 };
 
 let records = [
-  { id:1, type:'container-ship', label:'Tàu container', trips:42, fuel:'HFO', consumption:1850, co2:5760.9, period:'Tháng 06/2026', note:'' },
-  { id:2, type:'truck',          label:'Xe container',  trips:1240,fuel:'Diesel',consumption:48000,co2:126.72,period:'Tháng 06/2026', note:'' },
-  { id:3, type:'barge',          label:'Xà lan',        trips:88, fuel:'MGO', consumption:620,   co2:1987.7,period:'Tháng 06/2026', note:'' },
+  { id:1, type:'container-ship', label:'Tàu container', trips:42,   fuel:'HFO',    consumption:1850,  co2:5760.9, period:'Tháng 06/2026', note:'' },
+  { id:2, type:'truck',          label:'Xe container',  trips:1240, fuel:'Diesel', consumption:48000, co2:126.72, period:'Tháng 06/2026', note:'' },
+  { id:3, type:'barge',          label:'Xà lan',        trips:88,   fuel:'MGO',    consumption:620,   co2:1987.7, period:'Tháng 06/2026', note:'' },
 ];
 
+let equipmentList = [];
 let deleteTarget = null;
 let activeVehicle = 'all';
 let barMode = 'co2';
@@ -550,40 +728,56 @@ let kpiDetailRef = null;
 let barChartRef = null;
 let trendChartRef = null;
 let mgmtDonutRef = null;
+let radarChartRef = null;
+let scatterChartRef = null;
+let stackedBarRef = null;
 let statusList = ['draft','submitted','locked'];
 let statusIdx = 1;
 
-// ─── COMPUTED ──────────────────────────────────────────────
-function getCO2(v) { return +(v.consumption * v.ef / 1000).toFixed(2); }
+// ─── TAB SWITCHING ────────────────────────────────────────
+function setMainTab(tabName) {
+  const tabs = ['overview','manage','shap','equipment'];
+  tabs.forEach(t => {
+    document.getElementById('page-' + t).classList.add('hidden');
+    document.getElementById('tab-btn-' + t).classList.remove('active');
+  });
+  document.getElementById('page-' + tabName).classList.remove('hidden');
+  document.getElementById('tab-btn-' + tabName).classList.add('active');
 
-function getFiltered() {
-  if(activeVehicle==='all') return VHCL;
-  return VHCL.filter(v=>v.key===activeVehicle);
+  if (tabName === 'shap' && !radarChartRef) {
+    buildShap();
+  }
 }
 
-// ─── INIT ──────────────────────────────────────────────────
+// ─── COMPUTED ─────────────────────────────────────────────
+function getCO2(v) { return +(v.consumption * v.ef / 1000).toFixed(2); }
+function getFiltered() {
+  if (activeVehicle === 'all') return VHCL;
+  return VHCL.filter(v => v.key === activeVehicle);
+}
+
+// ─── INIT ─────────────────────────────────────────────────
 function init() {
   updateAll();
-  buildShap();
   renderMgmtTable();
   updateMgmtSummary();
 }
 
 function updateAll() {
   const vhcls = getFiltered();
-  const totalCO2 = vhcls.reduce((s,v)=>s+getCO2(v),0);
-  const totalTrips = vhcls.reduce((s,v)=>s+v.trips,0);
-  const top = [...VHCL].sort((a,b)=>getCO2(b)-getCO2(a))[0];
+  const totalCO2 = vhcls.reduce((s,v) => s + getCO2(v), 0);
+  const totalTrips = vhcls.reduce((s,v) => s + v.trips, 0);
+  const top = [...VHCL].sort((a,b) => getCO2(b) - getCO2(a))[0];
   const prev = totalCO2 * 0.951;
-  const chgPct = ((totalCO2-prev)/prev*100).toFixed(1);
+  const chgPct = ((totalCO2 - prev) / prev * 100).toFixed(1);
 
-  document.getElementById('kpi-total').innerHTML = fmtNum(totalCO2)+'<span class="kpi-unit"> tCO₂e</span>';
-  document.getElementById('kpi-total-chg').textContent = '↑ +'+chgPct+'%';
-  document.getElementById('kpi-top').textContent = top.icon+' '+top.label;
-  document.getElementById('kpi-top-val').textContent = fmtNum(getCO2(top))+' tCO₂e';
-  document.getElementById('kpi-trips').innerHTML = totalTrips.toLocaleString('vi-VN')+'<span class="kpi-unit"> lượt</span>';
-  document.getElementById('kpi-trips-type').textContent = vhcls.length+' loại phương tiện';
-  document.getElementById('kpi-change').innerHTML = '<span style="color:var(--red)">▲ +'+chgPct+'%</span>';
+  document.getElementById('kpi-total').innerHTML = fmtNum(totalCO2) + '<span class="kpi-unit"> tCO₂e</span>';
+  document.getElementById('kpi-total-chg').textContent = '↑ +' + chgPct + '%';
+  document.getElementById('kpi-top').textContent = top.icon + ' ' + top.label;
+  document.getElementById('kpi-top-val').textContent = fmtNum(getCO2(top)) + ' tCO₂e';
+  document.getElementById('kpi-trips').innerHTML = totalTrips.toLocaleString('vi-VN') + '<span class="kpi-unit"> lượt</span>';
+  document.getElementById('kpi-trips-type').textContent = vhcls.length + ' loại phương tiện';
+  document.getElementById('kpi-change').innerHTML = '<span style="color:var(--red)">▲ +' + chgPct + '%</span>';
 
   buildBreakdown(vhcls, totalCO2);
   updateBarChart(vhcls);
@@ -594,46 +788,39 @@ function updateAll() {
 // ─── BREAKDOWN CARDS ──────────────────────────────────────
 function buildBreakdown(vhcls, total) {
   const grid = document.getElementById('breakdownGrid');
-  grid.innerHTML = VHCL.map(v=>{
+  grid.innerHTML = VHCL.map(v => {
     const co2 = getCO2(v);
-    const pct = total>0?(co2/total*100).toFixed(1):0;
-    const isFiltered = activeVehicle!=='all' && v.key!==activeVehicle;
-    return `<div class="breakdown-card" onclick="setVehicle('${v.key}',null)" style="opacity:${isFiltered?.4:1}">
+    const pct = total > 0 ? (co2 / total * 100).toFixed(1) : 0;
+    const isFiltered = activeVehicle !== 'all' && v.key !== activeVehicle;
+    return `<div class="breakdown-card" onclick="setVehicle('${v.key}',null)" style="opacity:${isFiltered ? .4 : 1}">
       <div class="bc-icon">${v.icon}</div>
       <div class="bc-name" style="color:${v.color}">${v.label}</div>
       <div class="bc-value">${fmtNum(co2)}<span class="bc-unit"> tCO₂e</span></div>
       <div class="bc-pct" style="color:${v.color}">${pct}%</div>
-      <div class="bc-bar" style="background:${v.color}44"><div style="width:${pct}%;height:100%;background:${v.color};border-radius:2px"></div></div>
+      <div class="bc-bar" style="background:${v.color}33">
+        <div style="width:${pct}%;height:100%;background:${v.color};border-radius:2px"></div>
+      </div>
     </div>`;
   }).join('');
-  VHCL.forEach(v=>{
-    const el = document.querySelector(`.breakdown-card:nth-child(${VHCL.indexOf(v)+1})`);
-    if(el) el.style.setProperty('--before-bg',v.color);
-  });
-  // Set ::before color via inline style override
-  document.querySelectorAll('.breakdown-card').forEach((el,i)=>{
-    el.style.cssText += `--bc:${VHCL[i].color}`;
-    el.querySelector('.bc-bar')&&(el.querySelector('.bc-bar').parentElement.querySelector('.bc-bar').style.borderTop=`3px solid ${VHCL[i].color}`);
-  });
 }
 
 // ─── BAR CHART ─────────────────────────────────────────────
 function updateBarChart(vhcls) {
-  if(barChartRef) barChartRef.destroy();
-  const labels = vhcls.map(v=>v.label);
-  const colors = vhcls.map(v=>v.color);
+  if (barChartRef) barChartRef.destroy();
+  const labels = vhcls.map(v => v.label);
+  const colors = vhcls.map(v => v.color);
   let data, yLabel;
-  if(barMode==='co2')   { data=vhcls.map(v=>getCO2(v)); yLabel='tCO₂e'; }
-  else if(barMode==='trips') { data=vhcls.map(v=>v.trips); yLabel='Lượt'; }
-  else                   { data=vhcls.map(v=>v.consumption); yLabel=v=>v+' đơn vị'; }
-  barChartRef = new Chart(document.getElementById('vehicleBar').getContext('2d'),{
-    type:'bar',
-    data:{ labels, datasets:[{ data, backgroundColor:colors, borderRadius:7, borderSkipped:false }] },
-    options:{
-      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.raw.toLocaleString()+' '+yLabel}} },
-      scales:{
-        x:{ grid:{display:false}, ticks:{font:{size:9,family:'Montserrat'}} },
-        y:{ grid:{color:'#f0f0f0'}, ticks:{font:{size:9,family:'Montserrat'}} }
+  if (barMode === 'co2')     { data = vhcls.map(v => getCO2(v)); yLabel = 'tCO₂e'; }
+  else if (barMode === 'trips') { data = vhcls.map(v => v.trips); yLabel = 'Lượt'; }
+  else                       { data = vhcls.map(v => v.consumption); yLabel = 'đơn vị'; }
+  barChartRef = new Chart(document.getElementById('vehicleBar').getContext('2d'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 7, borderSkipped: false }] },
+    options: {
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw.toLocaleString() + ' ' + yLabel } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9, family: 'Montserrat' } } },
+        y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 9, family: 'Montserrat' } } }
       }
     }
   });
@@ -641,33 +828,33 @@ function updateBarChart(vhcls) {
 
 // ─── TREND CHART ───────────────────────────────────────────
 function updateTrendChart() {
-  if(trendChartRef) trendChartRef.destroy();
-  const keys = trendMode==='top2'
-    ? [...VHCL].sort((a,b)=>getCO2(b)-getCO2(a)).slice(0,2).map(v=>v.key)
-    : VHCL.map(v=>v.key);
-  const datasets = keys.map(k=>{
-    const v = VHCL.find(x=>x.key===k);
-    return { label:v.label, data:TREND_DATA[k], borderColor:v.color, borderWidth:2, pointRadius:3,
-      backgroundColor:v.color+'18', fill:false, tension:.4, pointBackgroundColor:v.color };
+  if (trendChartRef) trendChartRef.destroy();
+  const keys = trendMode === 'top2'
+    ? [...VHCL].sort((a,b) => getCO2(b) - getCO2(a)).slice(0,2).map(v => v.key)
+    : VHCL.map(v => v.key);
+  const datasets = keys.map(k => {
+    const v = VHCL.find(x => x.key === k);
+    return { label: v.label, data: TREND_DATA[k], borderColor: v.color, borderWidth: 2, pointRadius: 3,
+      backgroundColor: v.color + '18', fill: false, tension: .4, pointBackgroundColor: v.color };
   });
-  trendChartRef = new Chart(document.getElementById('trendLine').getContext('2d'),{
-    type:'line',
-    data:{ labels:MONTHS, datasets },
-    options:{
-      plugins:{ legend:{display:true, position:'bottom', labels:{font:{size:9,family:'Montserrat'},boxWidth:10,padding:8}} },
-      scales:{
-        x:{ grid:{display:false}, ticks:{font:{size:9,family:'Montserrat'}} },
-        y:{ grid:{color:'#f0f0f0'}, ticks:{font:{size:9,family:'Montserrat'}} }
+  trendChartRef = new Chart(document.getElementById('trendLine').getContext('2d'), {
+    type: 'line',
+    data: { labels: MONTHS, datasets },
+    options: {
+      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 9, family: 'Montserrat' }, boxWidth: 10, padding: 8 } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9, family: 'Montserrat' } } },
+        y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 9, family: 'Montserrat' } } }
       }
     }
   });
 }
 
-// ─── TABLE ─────────────────────────────────────────────────
+// ─── MAIN TABLE ───────────────────────────────────────────
 function renderMainTable(vhcls, total) {
-  const sorted = [...vhcls].sort((a,b)=>getCO2(b)-getCO2(a));
-  document.getElementById('mainTableBody').innerHTML = sorted.map((v,i)=>{
-    const co2=getCO2(v), pct=(co2/total*100).toFixed(1);
+  const sorted = [...vhcls].sort((a,b) => getCO2(b) - getCO2(a));
+  document.getElementById('mainTableBody').innerHTML = sorted.map((v,i) => {
+    const co2 = getCO2(v), pct = (co2 / total * 100).toFixed(1);
     return `<tr>
       <td><span class="rank-badge">${i+1}</span></td>
       <td><span class="type-badge" style="background:${v.color}18;color:${v.color}">${v.icon} ${v.label}</span></td>
@@ -690,91 +877,95 @@ function renderMainTable(vhcls, total) {
 // ─── VEHICLE FILTER ────────────────────────────────────────
 function setVehicle(key, btn) {
   activeVehicle = key;
-  document.querySelectorAll('.vtab').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  else { const found = document.querySelector(`.vtab[data-v="${key}"]`); if(found) found.classList.add('active'); }
+  document.querySelectorAll('.vtab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    const found = document.querySelector(`.vtab[data-v="${key}"]`);
+    if (found) found.classList.add('active');
+  }
   updateAll();
 }
 
-// ─── KPI DETAIL ────────────────────────────────────────────
+// ─── KPI DETAIL ───────────────────────────────────────────
 function toggleKpiDetail(mode) {
   const panel = document.getElementById('kpiDetail');
-  if(kpiDetailMode===mode && panel.classList.contains('show')) { closeKpiDetail(); return; }
+  if (kpiDetailMode === mode && panel.classList.contains('show')) { closeKpiDetail(); return; }
   kpiDetailMode = mode;
   panel.classList.add('show');
-  if(kpiDetailRef) kpiDetailRef.destroy();
+  if (kpiDetailRef) kpiDetailRef.destroy();
   const labels = MONTHS;
   let datasets;
-  if(mode==='total') {
+  if (mode === 'total') {
     document.getElementById('kpiDetailTitle').innerHTML = '<i class="fa-solid fa-cloud" style="color:var(--accent)"></i> Xu hướng tổng CO₂e 12 tháng';
-    const totalByMonth = labels.map((_,i)=>VHCL.reduce((s,v)=>s+TREND_DATA[v.key][i],0));
+    const totalByMonth = labels.map((_,i) => VHCL.reduce((s,v) => s + TREND_DATA[v.key][i], 0));
     datasets = [{ label:'Tổng CO₂e', data:totalByMonth, borderColor:'#2e7df7', borderWidth:2, pointRadius:3, backgroundColor:'rgba(46,125,247,.08)', fill:true, tension:.4 }];
   } else {
     document.getElementById('kpiDetailTitle').innerHTML = '<i class="fa-solid fa-arrow-trend-up" style="color:var(--red)"></i> Biến động tháng so với kỳ trước';
-    const base = TREND_DATA['container-ship'].map((_,i)=>VHCL.reduce((s,v)=>s+TREND_DATA[v.key][i],0));
-    const changes = base.map((v,i)=>i===0?0:+((v-base[i-1])/base[i-1]*100).toFixed(1));
+    const base = MONTHS.map((_,i) => VHCL.reduce((s,v) => s + TREND_DATA[v.key][i], 0));
+    const changes = base.map((v,i) => i === 0 ? 0 : +((v - base[i-1]) / base[i-1] * 100).toFixed(1));
     datasets = [{ label:'% thay đổi', data:changes, borderColor:'#ef4444', borderWidth:2, pointRadius:3, backgroundColor:'rgba(239,68,68,.08)', fill:true, tension:.4 }];
   }
-  kpiDetailRef = new Chart(document.getElementById('kpiDetailChart').getContext('2d'),{
-    type:'line', data:{ labels, datasets },
-    options:{ plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},ticks:{font:{size:8,family:'Montserrat'}}}, y:{grid:{color:'#f0f0f0'},ticks:{font:{size:8,family:'Montserrat'}}} } }
+  kpiDetailRef = new Chart(document.getElementById('kpiDetailChart').getContext('2d'), {
+    type: 'line', data: { labels, datasets },
+    options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { font: { size: 8, family: 'Montserrat' } } }, y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 8, family: 'Montserrat' } } } } }
   });
 }
-function closeKpiDetail() { document.getElementById('kpiDetail').classList.remove('show'); kpiDetailMode=null; }
+function closeKpiDetail() { document.getElementById('kpiDetail').classList.remove('show'); kpiDetailMode = null; }
 
-// ─── CHART TOGGLES ─────────────────────────────────────────
-function setBarMode(m,btn) {
-  barMode=m;
-  document.querySelectorAll('#page-overview .chart-card:first-child .ctbtn').forEach(b=>b.classList.remove('active'));
+// ─── CHART TOGGLES ────────────────────────────────────────
+function setBarMode(m, btn) {
+  barMode = m;
+  document.querySelectorAll('#bar-co2,#bar-trips,#bar-fuel').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   updateBarChart(getFiltered());
 }
-function setTrendMode(m,btn) {
-  trendMode=m;
-  document.querySelectorAll('#page-overview .chart-card:last-child .ctbtn').forEach(b=>b.classList.remove('active'));
+function setTrendMode(m, btn) {
+  trendMode = m;
+  document.querySelectorAll('#trend-all,#trend-top2').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   updateTrendChart();
 }
 
-// ─── STATUS BADGE ──────────────────────────────────────────
+// ─── STATUS BADGE ─────────────────────────────────────────
 function cycleStatus() {
-  statusIdx=(statusIdx+1)%3;
+  statusIdx = (statusIdx + 1) % 3;
   const s = statusList[statusIdx];
-  const badge = document.getElementById('statusBadge');
-  const labels = { draft:'Draft', submitted:'Submitted', locked:'Locked' };
-  badge.className = 'badge-status badge-'+s;
+  const labels = { draft: 'Draft', submitted: 'Submitted', locked: 'Locked' };
+  document.getElementById('statusBadge').className = 'badge-status badge-' + s;
   document.getElementById('statusText').textContent = labels[s];
 }
 
-// ─── MANAGE TAB ────────────────────────────────────────────
+// ─── MANAGE TAB ───────────────────────────────────────────
 function saveRecord() {
   const type = document.getElementById('m-type').value;
-  if(!type) { showToast('Vui lòng chọn loại phương tiện','warn'); return; }
-  const v = VHCL.find(x=>x.key===type);
-  const trips = parseInt(document.getElementById('m-trips').value)||0;
+  if (!type) { showToast('Vui lòng chọn loại phương tiện', 'warn'); return; }
+  const v = VHCL.find(x => x.key === type);
+  const trips = parseInt(document.getElementById('m-trips').value) || 0;
   const fuel = document.getElementById('m-fuel').value;
-  const cons = parseFloat(document.getElementById('m-consumption').value)||0;
+  const cons = parseFloat(document.getElementById('m-consumption').value) || 0;
   const note = document.getElementById('m-note').value;
-  const EF_MAP = {'HFO (Dầu nặng)':3.114,'MGO (Dầu nhẹ)':3.206,'Diesel':2.640,'LNG':2.750,'MDO':3.100};
-  const ef = EF_MAP[fuel]||3.114;
+  const EF_MAP = { 'HFO (Dầu nặng)':3.114, 'MGO (Dầu nhẹ)':3.206, 'Diesel':2.640, 'LNG':2.750, 'MDO':3.100 };
+  const ef = EF_MAP[fuel] || 3.114;
   const co2 = +(cons * ef / 1000).toFixed(2);
   const period = document.getElementById('m-period').value;
-  records.push({ id:Date.now(), type, label:v.label, trips, fuel, consumption:cons, co2, period, note });
-  // Update main data
-  const mainV = VHCL.find(x=>x.key===type);
-  if(mainV) { mainV.trips+=trips; mainV.consumption+=cons; }
-  document.getElementById('m-trips').value='';
-  document.getElementById('m-consumption').value='';
-  document.getElementById('m-note').value='';
+  records.push({ id: Date.now(), type, label: v.label, trips, fuel, consumption: cons, co2, period, note });
+  const mainV = VHCL.find(x => x.key === type);
+  if (mainV) { mainV.trips += trips; mainV.consumption += cons; }
+  document.getElementById('m-trips').value = '';
+  document.getElementById('m-consumption').value = '';
+  document.getElementById('m-note').value = '';
   renderMgmtTable(); updateMgmtSummary(); updateAll();
-  showToast('Đã lưu & cập nhật dashboard Scope 3','success');
+  showToast('Đã lưu & cập nhật dashboard Scope 3', 'success');
 }
 
 function renderMgmtTable() {
   const tbody = document.getElementById('mgmtTableBody');
-  if(!records.length) { tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;font-size:.8rem">Chưa có dữ liệu</td></tr>'; return; }
-  tbody.innerHTML = records.map(r=>{
-    const v = VHCL.find(x=>x.key===r.type)||{color:'#ccc',icon:'📦'};
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;font-size:.8rem">Chưa có dữ liệu</td></tr>';
+    return;
+  }
+  tbody.innerHTML = records.map(r => {
+    const v = VHCL.find(x => x.key === r.type) || { color:'#ccc', icon:'📦' };
     return `<tr>
       <td><span class="type-badge" style="background:${v.color}18;color:${v.color}">${v.icon} ${r.label}</span></td>
       <td>${r.trips.toLocaleString()}</td>
@@ -782,7 +973,7 @@ function renderMgmtTable() {
       <td>${r.consumption.toLocaleString()}</td>
       <td style="color:${v.color};font-weight:700">${r.co2}</td>
       <td style="font-size:.72rem;color:var(--text-muted)">${r.period}</td>
-      <td style="text-align:center;white-space:nowrap">
+      <td style="text-align:center">
         <button class="tbl-action-btn del" onclick="confirmDelete(${r.id})"><i class="fa-solid fa-trash"></i></button>
       </td>
     </tr>`;
@@ -790,70 +981,183 @@ function renderMgmtTable() {
 }
 
 function updateMgmtSummary() {
-  const total = records.reduce((s,r)=>s+r.co2,0);
-  document.getElementById('mgmt-total-co2').innerHTML = fmtNum(total)+'<span style="font-size:.75rem;font-weight:500;color:var(--text-muted)"> tCO₂e</span>';
-  if(mgmtDonutRef) mgmtDonutRef.destroy();
+  const total = records.reduce((s,r) => s + r.co2, 0);
+  document.getElementById('mgmt-total-co2').innerHTML = fmtNum(total) + '<span style="font-size:.75rem;font-weight:500;color:var(--text-muted)"> tCO₂e</span>';
+  if (mgmtDonutRef) mgmtDonutRef.destroy();
   const grouped = {};
-  records.forEach(r=>{ if(!grouped[r.label]) grouped[r.label]={co2:0,color:VHCL.find(v=>v.key===r.type)?.color||'#ccc'}; grouped[r.label].co2+=r.co2; });
+  records.forEach(r => {
+    if (!grouped[r.label]) grouped[r.label] = { co2:0, color: VHCL.find(v => v.key === r.type)?.color || '#ccc' };
+    grouped[r.label].co2 += r.co2;
+  });
   const labels = Object.keys(grouped);
-  if(!labels.length) return;
-  mgmtDonutRef = new Chart(document.getElementById('mgmtDonut').getContext('2d'),{
-    type:'doughnut',
-    data:{ labels, datasets:[{ data:labels.map(l=>grouped[l].co2), backgroundColor:labels.map(l=>grouped[l].color), borderWidth:2, borderColor:'#fff' }] },
-    options:{ cutout:'65%', plugins:{ legend:{ display:true, position:'bottom', labels:{font:{size:9,family:'Montserrat'},boxWidth:10,padding:6} } } }
+  if (!labels.length) return;
+  mgmtDonutRef = new Chart(document.getElementById('mgmtDonut').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: labels.map(l => grouped[l].co2), backgroundColor: labels.map(l => grouped[l].color), borderWidth: 2, borderColor: '#fff' }] },
+    options: { cutout: '65%', plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 9, family: 'Montserrat' }, boxWidth: 10, padding: 6 } } } }
   });
 }
 
-function confirmDelete(id) { deleteTarget=id; document.getElementById('deleteModal').classList.add('show'); }
+function confirmDelete(id) { deleteTarget = id; document.getElementById('deleteModal').classList.add('show'); }
 function doDelete() {
-  records = records.filter(r=>r.id!==deleteTarget);
+  records = records.filter(r => r.id !== deleteTarget);
   document.getElementById('deleteModal').classList.remove('show');
   renderMgmtTable(); updateMgmtSummary();
-  showToast('Đã xóa bản ghi','success');
+  showToast('Đã xóa bản ghi', 'success');
 }
 
-// ─── SHAP ──────────────────────────────────────────────────
+// ─── EQUIPMENT TAB ────────────────────────────────────────
+const EQ_ICONS = { 'container-ship':'🚢', 'truck':'🚛', 'barge':'⛵', 'tugboat':'🛥️', 'port':'🏗️' };
+const EQ_LABELS = { 'container-ship':'Tàu container', 'truck':'Xe container', 'barge':'Xà lan', 'tugboat':'Tàu lai dắt', 'port':'PT nội bộ' };
+const EQ_COLORS = { 'container-ship':'#2e7df7', 'truck':'#0ea5e9', 'barge':'#22c55e', 'tugboat':'#f59e0b', 'port':'#8b5cf6' };
+
+function addEquipment() {
+  const name = document.getElementById('eq-name').value.trim();
+  const id   = document.getElementById('eq-id').value.trim();
+  const type = document.getElementById('eq-type').value;
+  if (!name || !id || !type) {
+    showToast('Vui lòng điền đầy đủ: Tên, Mã định danh và Loại phương tiện!', 'warn');
+    return;
+  }
+  // Check duplicate ID
+  if (equipmentList.find(e => e.id === id)) {
+    showToast('Mã định danh "' + id + '" đã tồn tại!', 'warn');
+    return;
+  }
+  const eq = {
+    name,
+    id,
+    type,
+    year:  document.getElementById('eq-year').value || '–',
+    fuel:  document.getElementById('eq-fuel').value,
+    ef:    document.getElementById('eq-ef').value || '–',
+    power: document.getElementById('eq-power').value || '–',
+    hours: document.getElementById('eq-hours').value || '–',
+    note:  document.getElementById('eq-note').value || '',
+  };
+  equipmentList.push(eq);
+  renderEquipmentTable();
+  updateFleetCounts();
+  clearEquipmentForm();
+  showToast('Đã thêm thiết bị "' + name + '" thành công!', 'success');
+}
+
+function clearEquipmentForm() {
+  ['eq-name','eq-id','eq-year','eq-ef','eq-power','eq-hours','eq-note'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('eq-type').value = '';
+  document.getElementById('eq-fuel').value = 'HFO (Dầu nặng)';
+}
+
+function renderEquipmentTable() {
+  const tbody = document.getElementById('equipmentTableBody');
+  if (!equipmentList.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:24px;font-size:.8rem">
+      <i class="fa-solid fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;opacity:.3"></i>
+      Chưa có thiết bị nào. Hãy khai báo thiết bị đầu tiên ở form bên trên.
+    </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = equipmentList.map((eq, idx) => {
+    const color = EQ_COLORS[eq.type] || '#ccc';
+    const icon  = EQ_ICONS[eq.type]  || '📦';
+    const lbl   = EQ_LABELS[eq.type] || eq.type;
+    return `<tr>
+      <td><span class="type-badge" style="background:${color}18;color:${color};font-size:.7rem">${eq.id}</span></td>
+      <td style="font-weight:600">${eq.name}</td>
+      <td><span class="type-badge" style="background:${color}18;color:${color}">${icon} ${lbl}</span></td>
+      <td style="color:var(--text-muted)">${eq.year}</td>
+      <td style="color:var(--text-muted);font-size:.73rem">${eq.fuel}</td>
+      <td style="font-weight:700;color:${color}">${eq.ef}</td>
+      <td style="color:var(--text-muted)">${eq.power !== '–' ? eq.power + ' kW' : '–'}</td>
+      <td style="color:var(--text-muted)">${eq.hours !== '–' ? eq.hours + ' h' : '–'}</td>
+      <td style="text-align:center">
+        <button class="tbl-action-btn del" onclick="deleteEquipment(${idx})" title="Xóa thiết bị">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function deleteEquipment(idx) {
+  const name = equipmentList[idx].name;
+  equipmentList.splice(idx, 1);
+  renderEquipmentTable();
+  updateFleetCounts();
+  showToast('Đã xóa thiết bị "' + name + '"', 'warn');
+}
+
+function updateFleetCounts() {
+  const counts = { 'container-ship':0, 'truck':0, 'barge':0, 'tugboat':0, 'port':0 };
+  equipmentList.forEach(e => { if (counts[e.type] !== undefined) counts[e.type]++; });
+  Object.keys(counts).forEach(k => {
+    const el = document.getElementById('eq-count-' + k);
+    if (el) el.textContent = counts[k];
+  });
+  document.getElementById('eq-count-total').textContent = equipmentList.length;
+}
+
+// ─── SHAP TAB ─────────────────────────────────────────────
 function buildShap() {
   // SHAP bars
   const shapData = [
-    { label:'Tàu container',      value:38.4, color:'#2e7df7' },
-    { label:'Xe container',       value:24.1, color:'#0ea5e9' },
-    { label:'Xà lan',             value:18.7, color:'#22c55e' },
-    { label:'Tàu lai dắt',        value:11.2, color:'#f59e0b' },
-    { label:'PT nội bộ cảng',     value:7.6,  color:'#8b5cf6' },
+    { label:'Tàu container',  value:38.4, color:'#2e7df7' },
+    { label:'Xe container',   value:24.1, color:'#0ea5e9' },
+    { label:'Xà lan',         value:18.7, color:'#22c55e' },
+    { label:'Tàu lai dắt',    value:11.2, color:'#f59e0b' },
+    { label:'PT nội bộ cảng', value:7.6,  color:'#8b5cf6' },
   ];
-  document.getElementById('shapBars').innerHTML = shapData.map(s=>`
+  document.getElementById('shapBars').innerHTML = shapData.map(s => `
     <div class="shap-bar-row">
       <div class="shap-label">${s.label}</div>
-      <div class="shap-bar-wrap"><div class="shap-bar" style="width:${s.value*2}%;background:${s.color}"></div></div>
+      <div class="shap-bar-wrap"><div class="shap-bar" style="width:${s.value * 2}%;background:${s.color}"></div></div>
       <div class="shap-val" style="color:${s.color}">${s.value}%</div>
     </div>`).join('');
 
   // RADAR
-  new Chart(document.getElementById('radarChart').getContext('2d'),{
-    type:'radar',
-    data:{
-      labels:['CO₂e','Lượt vận hành','Tiêu thụ NL','Tần suất','Quãng đường'],
-      datasets: VHCL.map(v=>({
-        label:v.label, data:[getCO2(v)/100, v.trips/100, v.consumption/1000, Math.random()*8+2, Math.random()*10+3].map(x=>+x.toFixed(1)),
-        borderColor:v.color, backgroundColor:v.color+'22', borderWidth:2, pointBackgroundColor:v.color, pointRadius:4
+  radarChartRef = new Chart(document.getElementById('radarChart').getContext('2d'), {
+    type: 'radar',
+    data: {
+      labels: ['CO₂e','Lượt vận hành','Tiêu thụ NL','Tần suất','Quãng đường'],
+      datasets: VHCL.map(v => ({
+        label: v.label,
+        data: [getCO2(v)/100, v.trips/100, v.consumption/1000, Math.random()*8+2, Math.random()*10+3].map(x => +x.toFixed(1)),
+        borderColor: v.color, backgroundColor: v.color + '22', borderWidth: 2, pointBackgroundColor: v.color, pointRadius: 4
       }))
     },
-    options:{
-      plugins:{ legend:{ display:true, position:'bottom', labels:{font:{size:8,family:'Montserrat'},boxWidth:8,padding:6} } },
-      scales:{ r:{ ticks:{font:{size:8}}, grid:{color:'#f0f0f0'} } }
+    options: {
+      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 8, family: 'Montserrat' }, boxWidth: 8, padding: 6 } } },
+      scales: { r: { ticks: { font: { size: 8 } }, grid: { color: '#f0f0f0' } } }
     }
   });
 
   // SCATTER
-  new Chart(document.getElementById('scatterChart').getContext('2d'),{
-    type:'scatter',
-    data:{ datasets: VHCL.map(v=>({ label:v.label, data:[{x:v.consumption/1000,y:getCO2(v)}], backgroundColor:v.color, pointRadius:8, pointHoverRadius:10 })) },
-    options:{
-      plugins:{ legend:{ display:true, position:'bottom', labels:{font:{size:8,family:'Montserrat'},boxWidth:8,padding:6} } },
-      scales:{
-        x:{ title:{display:true,text:'Tiêu thụ nhiên liệu (đơn vị nghìn)',font:{size:9,family:'Montserrat'}}, grid:{color:'#f0f0f0'}, ticks:{font:{size:8}} },
-        y:{ title:{display:true,text:'Phát thải (tCO₂e)',font:{size:9,family:'Montserrat'}},        grid:{color:'#f0f0f0'}, ticks:{font:{size:8}} }
+  scatterChartRef = new Chart(document.getElementById('scatterChart').getContext('2d'), {
+    type: 'scatter',
+    data: { datasets: VHCL.map(v => ({ label: v.label, data: [{ x: v.consumption/1000, y: getCO2(v) }], backgroundColor: v.color, pointRadius: 8, pointHoverRadius: 10 })) },
+    options: {
+      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 8, family: 'Montserrat' }, boxWidth: 8, padding: 6 } } },
+      scales: {
+        x: { title: { display: true, text: 'Tiêu thụ nhiên liệu (nghìn đơn vị)', font: { size: 9, family: 'Montserrat' } }, grid: { color: '#f0f0f0' }, ticks: { font: { size: 8 } } },
+        y: { title: { display: true, text: 'Phát thải (tCO₂e)', font: { size: 9, family: 'Montserrat' } }, grid: { color: '#f0f0f0' }, ticks: { font: { size: 8 } } }
+      }
+    }
+  });
+
+  // STACKED BAR
+  stackedBarRef = new Chart(document.getElementById('stackedBar').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: MONTHS,
+      datasets: VHCL.map(v => ({ label: v.label, data: TREND_DATA[v.key], backgroundColor: v.color + 'cc', stack: 's' }))
+    },
+    options: {
+      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 8, family: 'Montserrat' }, boxWidth: 10, padding: 6 } } },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 8, family: 'Montserrat' } } },
+        y: { stacked: true, grid: { color: '#f0f0f0' }, ticks: { font: { size: 8, family: 'Montserrat' } } }
       }
     }
   });
@@ -865,7 +1169,7 @@ function buildShap() {
     { color:'#22c55e', text:'Xà lan có EF cao nhất (3.206 tCO₂/tấn MGO) – cân nhắc thay MGO bằng Biodiesel', val:'→ Giảm 5-8% phát thải tổng thể' },
     { color:'#8b5cf6', text:'PT nội bộ cảng: cơ hội điện hóa cao – tỷ trọng thấp, ảnh hưởng dài hạn tốt', val:'→ Điện hóa 50% đội PT nội bộ giảm 3.8%' },
   ];
-  document.getElementById('insightList').innerHTML = insights.map(ins=>`
+  document.getElementById('insightList').innerHTML = insights.map(ins => `
     <div class="insight-item">
       <div class="insight-dot" style="background:${ins.color}"></div>
       <div>
@@ -873,51 +1177,20 @@ function buildShap() {
         <div class="insight-val">${ins.val}</div>
       </div>
     </div>`).join('');
-
-  // STACKED
-  new Chart(document.getElementById('stackedBar').getContext('2d'),{
-    type:'bar',
-    data:{
-      labels:MONTHS,
-      datasets: VHCL.map(v=>({ label:v.label, data:TREND_DATA[v.key], backgroundColor:v.color+'cc', stack:'s' }))
-    },
-    options:{
-      plugins:{ legend:{ display:true, position:'bottom', labels:{font:{size:8,family:'Montserrat'},boxWidth:10,padding:6} } },
-      scales:{
-        x:{ stacked:true, grid:{display:false}, ticks:{font:{size:8,family:'Montserrat'}} },
-        y:{ stacked:true, grid:{color:'#f0f0f0'}, ticks:{font:{size:8,family:'Montserrat'}} }
-      }
-    }
-  });
 }
 
-// ─── MAIN TABS ─────────────────────────────────────────────
-function setMainTab(tab, navEl) {
-  ['overview','manage','shap'].forEach(t=>{
-    document.getElementById('page-'+t).classList.toggle('hidden',t!==tab);
-    document.getElementById('tab-btn-'+t).classList.toggle('active',t===tab);
-  });
-  ['nav-overview','nav-manage','nav-shap'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) { el.classList.remove('active'); el.querySelector('i').style.color='var(--text-muted)'; }
-  });
-  const navId = 'nav-'+tab;
-  const navEl2 = document.getElementById(navId);
-  if(navEl2) { navEl2.classList.add('active'); navEl2.querySelector('i').style.color='var(--accent)'; }
-  return false;
-}
-
-// ─── HELPERS ───────────────────────────────────────────────
-function fmtNum(n) { return n>=1000?n.toLocaleString('vi-VN',{maximumFractionDigits:1}):n.toFixed(1); }
+// ─── HELPERS ──────────────────────────────────────────────
+function fmtNum(n) { return n >= 1000 ? n.toLocaleString('vi-VN', { maximumFractionDigits: 1 }) : n.toFixed(1); }
 
 let toastTimer;
-function showToast(msg, type='success') {
+function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
   const icons = { success:'fa-circle-check', warn:'fa-triangle-exclamation', error:'fa-circle-xmark' };
-  t.className = `toast ${type} show`;
-  t.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
+  t.className = 'toast ' + type + ' show';
+  document.getElementById('toast-icon').className = 'fa-solid ' + (icons[type] || icons.success);
+  document.getElementById('toast-text').textContent = msg;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'),3500);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 init();
