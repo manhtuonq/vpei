@@ -172,6 +172,15 @@ tr:hover td { background:#f8f9fd; }
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:var(--gray-border); border-radius:10px; }
+.submenu{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.3s ease;
+}
+
+.submenu.open{
+  max-height:100px;
+}
 </style>
 </head>
 <body>
@@ -184,8 +193,30 @@ tr:hover td { background:#f8f9fd; }
   <nav class="nav-items">
     <div class="nav-section">Menu chính</div>
     <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-pie" style="width:16px;color:var(--text-muted)"></i> Dashboard</a>
-    <a href="scope_01.html" class="nav-item"><i class="fa-solid fa-industry" style="width:16px;color:var(--text-muted)"></i> Scope 1</a>
-    <a href="scope_02.html" class="nav-item"><i class="fa-solid fa-bolt" style="width:16px;color:var(--text-muted)"></i> Scope 2</a>
+    <div class="nav-item" onclick="toggleMenu('scope1Menu')">
+      <i class="fa-solid fa-industry" style="width:16px;color:var(--text-muted)"></i>
+      Scope 1
+      <i class="fa-solid fa-chevron-down nav-expand"></i>
+    </div>
+    
+    <div id="scope1Menu" class="submenu">
+      <a href="scope_01_emission_source.html" class="nav-item sub">
+        Quản lý nguồn phát thải
+      </a>
+    </div>
+    
+    
+    <div class="nav-item" onclick="toggleMenu('scope2Menu')">
+      <i class="fa-solid fa-bolt" style="width:16px;color:var(--text-muted)"></i>
+      Scope 2
+      <i class="fa-solid fa-chevron-down nav-expand"></i>
+    </div>
+    
+    <div id="scope2Menu" class="submenu">
+      <a href="scope_02Manager.html" class="nav-item sub">
+        Quản lý phát thải
+      </a>
+    </div>
     <a href="scope_03.html" class="nav-item"><i class="fa-solid fa-ship" style="width:16px;color:var(--text-muted)"></i> Scope 3</a>
     <div class="nav-section" style="margin-top:10px">Báo cáo</div>
     <a href="reports.html" class="nav-item"><i class="fa-solid fa-file-lines" style="width:16px;color:var(--text-muted)"></i> Reports</a>
@@ -194,7 +225,19 @@ tr:hover td { background:#f8f9fd; }
     <a href="settings.html" class="nav-item active"><i class="fa-solid fa-gear" style="width:16px;color:var(--accent)"></i> Settings</a>
   </div>
 </div>
-
+<script>
+  function toggleMenu(id){
+  
+    const menu = document.getElementById(id);
+  
+    if(menu.classList.contains("open")){
+        menu.classList.remove("open");
+    }else{
+        menu.classList.add("open");
+    }
+  
+  }
+  </script>
 <!-- ─── MAIN ─── -->
 <div class="main">
   <!-- TOPBAR -->
