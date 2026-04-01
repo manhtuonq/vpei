@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOSTrigger - Skills Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { montserrat: ['Montserrat', 'sans-serif'] },
+      colors: {
+        primary: '#1e3a6e',
+        'primary-dark': '#152b54',
+        'primary-light': '#2563eb',
+        accent: '#3b82f6',
+        'accent-light': '#60a5fa',
+      }
+    }
+  }
+}
+</script>
+<style>
+* { font-family: 'Montserrat', sans-serif; }
+body { background: #f0f4f8; }
+
+/* ===== SCREEN MANAGEMENT ===== */
+.screen { display: none; }
+.screen.active { display: flex; }
+
+/* ===== LOGIN ===== */
+#screen-login { min-height: 100vh; background: linear-gradient(135deg, #1e3a6e 0%, #2563eb 60%, #60a5fa 100%); }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes pulse-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.4); } 50% { box-shadow: 0 0 0 8px rgba(37,99,235,0); } }
+.fade-in { animation: fadeInUp 0.5s ease forwards; }
+.btn-pulse { animation: pulse-ring 2s infinite; }
+
+/* ===== SIDEBAR ===== */
+.sidebar { width: 220px; min-width: 220px; background: #1e3a6e; color: white; min-height: 100vh; }
+.sidebar .nav-item { padding: 12px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 500; }
+.sidebar .nav-item:hover, .sidebar .nav-item.active { background: rgba(255,255,255,0.15); border-left: 3px solid #60a5fa; }
+
+/* ===== TASK BAR ===== */
+.task-bar { background: #1e3a6e; color: white; padding: 0 16px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.task-btn { padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 4px 4px 0 0; transition: all 0.2s; border: none; background: transparent; color: rgba(255,255,255,0.7); }
+.task-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+.task-btn.active { background: white; color: #1e3a6e; }
+.task-btn.completed { position: relative; }
+.task-btn.completed::after { content: '✓'; position: absolute; top: 2px; right: 2px; font-size: 8px; color: #22c55e; }
+.task-btn.review::after { content: '⚑'; position: absolute; top: 2px; right: 2px; font-size: 8px; color: #f59e0b; }
+
+/* ===== WORD EDITOR MOCK ===== */
+.word-ribbon { background: #2b579a; color: white; }
+.ribbon-tab { padding: 6px 14px; font-size: 12px; cursor: pointer; display: inline-block; }
+.ribbon-tab:hover { background: rgba(255,255,255,0.2); }
+
+/* ===== MODALS ===== */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay.hidden { display: none; }
+
+/* ===== CARDS ===== */
+.exam-card { transition: all 0.2s; cursor: pointer; }
+.exam-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(30,58,110,0.15); }
+
+/* ===== TIMER ===== */
+#timer-display { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 18px; }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ==================== SCREEN 1: LOGIN ==================== -->
+<div id="screen-login" class="screen active flex-col items-center justify-center">
+  <div class="fade-in bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md mx-4">
+    <div class="text-center mb-8">
+      <div class="flex items-center justify-center gap-2 mb-1">
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-bolt text-white text-lg"></i>
+        </div>
+        <span class="text-3xl font-black text-primary tracking-tight">MOSTrigger</span>
+      </div>
+      <p class="text-gray-500 text-sm font-medium">Skills Management System</p>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <input id="login-user" type="text" placeholder="Username" class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-2 focus:ring-blue-100 transition" />
+        <div class="text-right mt-1"><a href="#" class="text-accent text-xs hover:underline">Forgot your username?</a></div>
+      </div>
+      <div>
+        <input id="login-pass" type="password" placeholder="Password" class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-2 focus:ring-blue-100 transition" />
+        <div class="text-right mt-1"><a href="#" class="text-accent text-xs hover:underline">Forgot your password?</a></div>
+      </div>
+      <select class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-600 focus:outline-none focus:border-accent">
+        <option>English</option><option>Tiếng Việt</option>
+      </select>
+      <button onclick="goToHome()" class="btn-pulse w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-lg transition text-sm tracking-wide">
+        <i class="fa-solid fa-right-to-bracket mr-2"></i>Sign In
+      </button>
+    </div>
+
+    <div class="my-5 flex items-center gap-3 text-gray-400 text-xs">
+      <div class="flex-1 h-px bg-gray-200"></div>OR<div class="flex-1 h-px bg-gray-200"></div>
+    </div>
+    <p class="text-center text-xs text-gray-500 mb-3">Sign in with an existing provider.</p>
+    <div class="flex justify-center gap-4">
+      <button class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition text-blue-600 font-bold text-sm">C</button>
+      <button class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><i class="fa-brands fa-google text-red-500"></i></button>
+      <button class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"><i class="fa-brands fa-microsoft text-blue-500"></i></button>
+    </div>
+    <p class="text-center text-xs text-gray-400 mt-5">Don't have an account? <a href="#" onclick="goToRegister()" class="text-accent hover:underline font-semibold">Sign up</a></p>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 1b: REGISTER ==================== -->
+<div id="screen-register" class="screen flex-col items-center justify-center" style="min-height:100vh; background: linear-gradient(135deg,#1e3a6e,#2563eb,#60a5fa)">
+  <div class="fade-in bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md mx-4">
+    <div class="text-center mb-6">
+      <div class="flex items-center justify-center gap-2 mb-1">
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center"><i class="fa-solid fa-bolt text-white text-lg"></i></div>
+        <span class="text-3xl font-black text-primary tracking-tight">MOSTrigger</span>
+      </div>
+      <p class="text-gray-500 text-sm">Create your account</p>
+    </div>
+    <div class="space-y-4">
+      <input type="text" placeholder="Full Name" class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-2 focus:ring-blue-100 transition" />
+      <input type="email" placeholder="Email" class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-2 focus:ring-blue-100 transition" />
+      <input type="password" placeholder="Password" class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-2 focus:ring-blue-100 transition" />
+      <input type="password" placeholder="Confirm Password" class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-2 focus:ring-blue-100 transition" />
+      <button onclick="goToHome()" class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-lg transition text-sm tracking-wide">
+        <i class="fa-solid fa-user-plus mr-2"></i>Create Account
+      </button>
+    </div>
+    <p class="text-center text-xs text-gray-400 mt-4">Already have an account? <a href="#" onclick="showScreen('screen-login')" class="text-accent hover:underline font-semibold">Sign in</a></p>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 2: HOME ==================== -->
+<div id="screen-home" class="screen flex" style="min-height:100vh;">
+  <!-- Sidebar -->
+  <div class="sidebar flex flex-col">
+    <div class="p-5 border-b border-blue-800">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center"><i class="fa-solid fa-bolt text-white text-sm"></i></div>
+        <span class="font-black text-white text-lg tracking-tight">MOSTrigger</span>
+      </div>
+      <p class="text-blue-300 text-xs mt-1 ml-10">Tin Học Sao Việt</p>
+    </div>
+    <nav class="flex-1 py-4">
+      <div class="nav-item active"><i class="fa-solid fa-house w-4"></i>Home</div>
+      <div class="nav-item"><i class="fa-solid fa-file-lines w-4"></i>Transcript</div>
+      <div class="nav-item"><i class="fa-solid fa-key w-4"></i>Redeem Code</div>
+      <div class="nav-item"><i class="fa-solid fa-user w-4"></i>Profile</div>
+      <div class="nav-item"><i class="fa-solid fa-circle-question w-4"></i>Help</div>
+      <div class="nav-item" onclick="showScreen('screen-login')"><i class="fa-solid fa-right-from-bracket w-4"></i>Sign Out</div>
+    </nav>
+    <div class="p-5 border-t border-blue-800">
+      <div class="nav-item px-0"><i class="fa-solid fa-globe w-4"></i>Language <i class="fa-solid fa-chevron-right ml-auto text-xs"></i></div>
+    </div>
+    <div class="p-5 pt-0"><p class="text-blue-400 text-xs font-bold tracking-widest">MOSTRIGG®</p></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 overflow-y-auto">
+    <!-- Banner -->
+    <div class="bg-gradient-to-r from-primary to-accent-light m-6 rounded-2xl p-8 flex items-center justify-between overflow-hidden relative" style="min-height:160px;">
+      <div class="relative z-10">
+        <div class="flex items-center gap-2 mb-1"><div class="w-6 h-6 bg-white/20 rounded flex items-center justify-center"><i class="fa-solid fa-bolt text-white text-xs"></i></div><span class="text-white font-black text-sm tracking-widest">MOSTRIGG</span></div>
+        <h2 class="text-white font-black text-3xl leading-tight">New Student<br>Portal Experience</h2>
+      </div>
+      <div class="absolute right-0 top-0 bottom-0 w-64 opacity-20" style="background: radial-gradient(circle, white 0%, transparent 70%);"></div>
+      <div class="w-48 h-32 bg-white/10 rounded-xl flex items-center justify-center"><i class="fa-solid fa-graduation-cap text-white text-5xl opacity-60"></i></div>
+    </div>
+
+    <!-- Resume Banner -->
+    <div class="mx-6 mb-6 bg-white rounded-xl border border-blue-100 px-6 py-4 flex items-center gap-4 shadow-sm cursor-pointer hover:shadow-md transition" onclick="goToExamList()">
+      <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">W</span></div>
+      <div>
+        <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Resume Test</p>
+        <p class="text-sm font-bold text-gray-700">Word Associate 2019 Practice Exam 1 Training</p>
+      </div>
+      <i class="fa-solid fa-chevron-right ml-auto text-gray-400"></i>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="mx-6 mb-6 grid grid-cols-4 gap-4">
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-2 shadow-sm hover:shadow-md transition cursor-pointer exam-card">
+        <i class="fa-solid fa-user text-2xl text-purple-400"></i>
+        <span class="text-sm font-semibold text-gray-600">Profile</span>
+      </div>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-2 shadow-sm hover:shadow-md transition cursor-pointer exam-card">
+        <i class="fa-solid fa-key text-2xl text-green-400"></i>
+        <span class="text-sm font-semibold text-gray-600">Redeem Code</span>
+      </div>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-2 shadow-sm hover:shadow-md transition cursor-pointer exam-card">
+        <i class="fa-solid fa-file-lines text-2xl text-blue-400"></i>
+        <span class="text-sm font-semibold text-gray-600">Transcript</span>
+      </div>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-2 shadow-sm hover:shadow-md transition cursor-pointer exam-card">
+        <i class="fa-solid fa-circle-question text-2xl text-orange-400"></i>
+        <span class="text-sm font-semibold text-gray-600">Help</span>
+      </div>
+    </div>
+
+    <!-- Sort -->
+    <div class="mx-6 mb-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-semibold text-gray-500">Sort By</span>
+        <select class="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent"><option>Category</option><option>Name</option></select>
+      </div>
+      <div class="relative"><i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i><input type="text" placeholder="Search" class="border border-gray-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-accent w-48"></div>
+    </div>
+
+    <!-- Microsoft 365 Apps -->
+    <div class="mx-6 mb-8">
+      <h3 class="text-base font-bold text-gray-700 mb-4">Microsoft 365 Apps</h3>
+      <div class="grid grid-cols-4 gap-4">
+        <div onclick="goToExamList()" class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">W</span></div>
+          <span class="text-sm font-bold text-gray-700">Word 365</span>
+          <span class="text-xs text-gray-400">MO-110: Word</span>
+        </div>
+        <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">W</span></div>
+          <div class="text-center"><span class="text-sm font-bold text-gray-700">Word 365</span><br><span class="text-xs text-blue-500 font-semibold">Expert</span></div>
+          <span class="text-xs text-gray-400">MO-111: Word Expert</span>
+        </div>
+        <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">X</span></div>
+          <span class="text-sm font-bold text-gray-700">Excel 365</span>
+          <span class="text-xs text-gray-400">MO-210: Excel</span>
+        </div>
+        <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-green-700 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">X</span></div>
+          <div class="text-center"><span class="text-sm font-bold text-gray-700">Excel 365</span><br><span class="text-xs text-green-500 font-semibold">Expert</span></div>
+          <span class="text-xs text-gray-400">MO-211: Excel Expert</span>
+        </div>
+        <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">P</span></div>
+          <span class="text-sm font-bold text-gray-700">PowerPoint 365</span>
+          <span class="text-xs text-gray-400">MO-310: PowerPoint</span>
+        </div>
+        <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-blue-400 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">O</span></div>
+          <span class="text-sm font-bold text-gray-700">Outlook 365</span>
+          <span class="text-xs text-gray-400">MO-400: Outlook</span>
+        </div>
+        <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">A</span></div>
+          <span class="text-sm font-bold text-gray-700">Access 365</span>
+          <span class="text-xs text-gray-400">MO-500: Access</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Office 2019 -->
+    <div class="mx-6 mb-8">
+      <h3 class="text-base font-bold text-gray-700 mb-4">Microsoft Office 2019</h3>
+      <div class="grid grid-cols-4 gap-4">
+        <div onclick="goToExamList()" class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">W</span></div>
+          <span class="text-sm font-bold text-gray-700">Word 2019</span>
+          <span class="text-xs text-gray-400">MO-100: Word</span>
+        </div>
+        <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">X</span></div>
+          <span class="text-sm font-bold text-gray-700">Excel 2019</span>
+          <span class="text-xs text-gray-400">MO-200: Excel</span>
+        </div>
+        <div class="bg-white rounded-xl p-5 flex flex-col items-center gap-3 shadow-sm exam-card border border-transparent hover:border-blue-200">
+          <div class="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center"><span class="text-white font-black text-lg">P</span></div>
+          <span class="text-sm font-bold text-gray-700">PowerPoint 2019</span>
+          <span class="text-xs text-gray-400">MO-300: PowerPoint</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 3: EXAM LIST ==================== -->
+<div id="screen-exam-list" class="screen flex" style="min-height:100vh;">
+  <div class="sidebar flex flex-col">
+    <div class="p-5 border-b border-blue-800">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center"><i class="fa-solid fa-bolt text-white text-sm"></i></div>
+        <span class="font-black text-white text-lg tracking-tight">MOSTrigger</span>
+      </div>
+      <p class="text-blue-300 text-xs mt-1 ml-10">Tin Học Sao Việt</p>
+    </div>
+    <nav class="flex-1 py-4">
+      <div class="nav-item" onclick="goToHome()"><i class="fa-solid fa-house w-4"></i>Home</div>
+      <div class="nav-item"><i class="fa-solid fa-file-lines w-4"></i>Transcript</div>
+      <div class="nav-item"><i class="fa-solid fa-key w-4"></i>Redeem Code</div>
+      <div class="nav-item"><i class="fa-solid fa-user w-4"></i>Profile</div>
+      <div class="nav-item"><i class="fa-solid fa-circle-question w-4"></i>Help</div>
+      <div class="nav-item" onclick="showScreen('screen-login')"><i class="fa-solid fa-right-from-bracket w-4"></i>Sign Out</div>
+    </nav>
+    <div class="p-5"><p class="text-blue-400 text-xs font-bold tracking-widest">MOSTRIGG®</p></div>
+  </div>
+
+  <div class="flex-1 overflow-y-auto p-6">
+    <div class="flex items-center gap-3 mb-6">
+      <button onclick="goToHome()" class="w-9 h-9 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-50 transition"><i class="fa-solid fa-chevron-left text-gray-600 text-sm"></i></button>
+      <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">W</span></div>
+      <h1 class="text-xl font-black text-gray-800">MO-100: Word Associate 2019</h1>
+    </div>
+
+    <!-- Practice Exams -->
+    <div class="mb-6">
+      <h2 class="text-base font-bold text-gray-700 mb-3 flex items-center gap-2"><i class="fa-solid fa-file-circle-check text-accent"></i>Practice Exams</h2>
+      <div class="space-y-2">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-4">
+          <i class="fa-solid fa-file-pen text-gray-400"></i>
+          <span class="flex-1 text-sm font-semibold text-gray-700">Word Associate 2019 Practice Exam 1</span>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Passed</p><div class="w-5 h-5 rounded-full border-2 border-gray-300 mx-auto mt-1"></div></div>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Expiration Date</p><p class="text-xs font-semibold text-gray-600">Jun 30, 2026</p></div>
+          <button onclick="goToExamStart()" class="bg-accent hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm">Start</button>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-4">
+          <i class="fa-solid fa-file-pen text-gray-400"></i>
+          <span class="flex-1 text-sm font-semibold text-gray-700">Word Associate 2019 Practice Exam 2</span>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Passed</p><div class="w-5 h-5 rounded-full border-2 border-gray-300 mx-auto mt-1"></div></div>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Expiration Date</p><p class="text-xs font-semibold text-gray-600">Jun 30, 2026</p></div>
+          <button class="bg-accent hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm">Start</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Study Guide -->
+    <div class="mb-6">
+      <h2 class="text-base font-bold text-gray-700 mb-3 flex items-center gap-2"><i class="fa-solid fa-book-open text-accent"></i>Study Guide</h2>
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-4">
+        <i class="fa-solid fa-list-check text-gray-400"></i>
+        <span class="flex-1 text-sm font-semibold text-gray-700">MO-100: Word Associate 2019 Study Guide</span>
+        <button class="bg-accent hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm">Start</button>
+      </div>
+    </div>
+
+    <!-- Quizzes -->
+    <div class="mb-6">
+      <h2 class="text-base font-bold text-gray-700 mb-3 flex items-center gap-2"><i class="fa-solid fa-circle-question text-accent"></i>Quizzes</h2>
+      <div class="space-y-2">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-4">
+          <i class="fa-solid fa-file-pen text-gray-400"></i>
+          <span class="flex-1 text-sm font-semibold text-gray-700">Word 2019 – Concept Review 1</span>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Passed</p><div class="w-5 h-5 rounded-full border-2 border-gray-300 mx-auto mt-1"></div></div>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Expiration Date</p><p class="text-xs font-semibold text-gray-600">Jun 30, 2026</p></div>
+          <button class="bg-accent hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm">Start</button>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-4">
+          <i class="fa-solid fa-file-pen text-gray-400"></i>
+          <span class="flex-1 text-sm font-semibold text-gray-700">Word 2019 – Concept Review 2</span>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Passed</p><div class="w-5 h-5 rounded-full border-2 border-gray-300 mx-auto mt-1"></div></div>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Expiration Date</p><p class="text-xs font-semibold text-gray-600">Jun 30, 2026</p></div>
+          <button class="bg-accent hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm">Start</button>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-4">
+          <i class="fa-solid fa-file-pen text-gray-400"></i>
+          <span class="flex-1 text-sm font-semibold text-gray-700">Word Associate 2019 Simulation Practice Test 1</span>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Passed</p><div class="w-5 h-5 rounded-full border-2 border-gray-300 mx-auto mt-1"></div></div>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Expiration Date</p><p class="text-xs font-semibold text-gray-600">Jun 30, 2026</p></div>
+          <button class="bg-accent hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm">Start</button>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-4">
+          <i class="fa-solid fa-file-pen text-gray-400"></i>
+          <span class="flex-1 text-sm font-semibold text-gray-700">Word Associate 2019 Simulation Practice Test 2</span>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Passed</p><div class="w-5 h-5 rounded-full border-2 border-gray-300 mx-auto mt-1"></div></div>
+          <div class="text-center mr-6"><p class="text-xs text-gray-400 font-medium">Expiration Date</p><p class="text-xs font-semibold text-gray-600">Jun 30, 2026</p></div>
+          <button class="bg-accent hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm">Start</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 4: EXAM START ==================== -->
+<div id="screen-exam-start" class="screen flex" style="min-height:100vh;">
+  <div class="sidebar flex flex-col">
+    <div class="p-5 border-b border-blue-800">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center"><i class="fa-solid fa-bolt text-white text-sm"></i></div>
+        <span class="font-black text-white text-lg tracking-tight">MOSTrigger</span>
+      </div>
+    </div>
+    <nav class="flex-1 py-4">
+      <div class="nav-item" onclick="goToHome()"><i class="fa-solid fa-house w-4"></i>Home</div>
+      <div class="nav-item"><i class="fa-solid fa-file-lines w-4"></i>Transcript</div>
+      <div class="nav-item"><i class="fa-solid fa-key w-4"></i>Redeem Code</div>
+      <div class="nav-item"><i class="fa-solid fa-user w-4"></i>Profile</div>
+      <div class="nav-item"><i class="fa-solid fa-circle-question w-4"></i>Help</div>
+      <div class="nav-item" onclick="showScreen('screen-login')"><i class="fa-solid fa-right-from-bracket w-4"></i>Sign Out</div>
+    </nav>
+    <div class="p-5"><p class="text-blue-400 text-xs font-bold tracking-widest">MOSTRIGG®</p></div>
+  </div>
+
+  <div class="flex-1 p-8">
+    <div class="flex items-center gap-3 mb-8">
+      <button onclick="goToExamList()" class="w-9 h-9 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-50 transition"><i class="fa-solid fa-chevron-left text-gray-600 text-sm"></i></button>
+      <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">W</span></div>
+      <h1 class="text-xl font-black text-gray-800">Word Associate 2019 Practice Exam 1</h1>
+      <button onclick="openNewTestModal()" class="ml-auto bg-accent hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2">
+        <i class="fa-solid fa-plus"></i>New Test
+      </button>
+    </div>
+
+    <p class="text-sm text-gray-500 mb-6 font-medium">Start a new test or resume one below</p>
+
+    <div class="bg-white rounded-2xl border border-blue-100 shadow-sm p-6 max-w-sm">
+      <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+        <div><span class="text-gray-400 font-medium">Last Saved:</span> <span class="font-semibold text-gray-700">Jul 23, 2025</span></div>
+        <div><span class="text-gray-400 font-medium">Mode:</span> <span class="font-semibold text-blue-600">Training</span></div>
+        <div class="col-span-2"><span class="text-gray-400 font-medium">Progress:</span> <span class="font-bold text-gray-700">40%</span>
+          <div class="w-full bg-gray-200 rounded-full h-2 mt-1"><div class="bg-accent h-2 rounded-full" style="width:40%"></div></div>
+        </div>
+      </div>
+      <button onclick="openNewTestModal()" class="w-full bg-accent hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm transition">
+        <i class="fa-solid fa-play mr-2"></i>Resume Test
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: NEW TEST CONFIG ==================== -->
+<div id="modal-new-test" class="modal-overlay hidden">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 fade-in">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">W</span></div>
+      <h2 class="text-lg font-black text-gray-800">Word Associate 2019 Practice Exam 1</h2>
+    </div>
+    <div class="space-y-4 mb-6">
+      <div class="flex items-center gap-4">
+        <label class="w-24 text-sm font-semibold text-gray-600">Language:</label>
+        <select class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+          <option>English</option><option>Tiếng Việt</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-4">
+        <label class="w-24 text-sm font-semibold text-gray-600">Mode:</label>
+        <select id="test-mode-select" class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent">
+          <option value="Testing">Testing</option>
+          <option value="Training">Training</option>
+        </select>
+      </div>
+      <p id="mode-desc" class="text-xs text-gray-400 ml-28">Testing mode does not provide detailed feedback on answers.</p>
+    </div>
+    <div class="grid grid-cols-3 gap-4 mb-8">
+      <div class="bg-blue-50 rounded-xl p-4 text-center border border-blue-100">
+        <p class="text-3xl font-black text-primary">35</p>
+        <p class="text-xs text-gray-500 font-semibold mt-1">Questions</p>
+      </div>
+      <div class="bg-blue-50 rounded-xl p-4 text-center border border-blue-100">
+        <p class="text-3xl font-black text-primary">50</p>
+        <p class="text-xs text-gray-500 font-semibold mt-1">Minutes</p>
+      </div>
+      <div class="bg-blue-50 rounded-xl p-4 text-center border border-blue-100">
+        <p class="text-3xl font-black text-primary">700</p>
+        <p class="text-xs text-gray-400 font-medium">Out of 1000</p>
+        <p class="text-xs text-gray-500 font-semibold">Passing Score</p>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeNewTestModal()" class="flex-1 border border-gray-300 text-gray-600 font-bold py-3 rounded-lg text-sm hover:bg-gray-50 transition">Cancel</button>
+      <button onclick="startExam()" class="flex-1 bg-accent hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm transition shadow-sm">
+        <i class="fa-solid fa-play mr-2"></i>Start Test
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 6: EXAM INTERFACE ==================== -->
+<div id="screen-exam" class="screen flex-col" style="min-height:100vh; background:#f5f5f5;">
+
+  <!-- Word-like Ribbon -->
+  <div class="word-ribbon">
+    <div class="flex items-center gap-2 px-4 py-1 bg-blue-700 text-white text-xs">
+      <i class="fa-solid fa-bolt text-yellow-300 text-xs"></i>
+      <span class="font-bold tracking-wide">MOSTrigger</span>
+      <span class="mx-1 opacity-40">|</span>
+      <span class="font-medium opacity-80">AutoSave <span class="text-yellow-300">OFF</span></span>
+      <span class="ml-auto font-semibold">2019_Word_101_Cabins.docx</span>
+      <span class="mx-1 opacity-40">|</span>
+      <span class="opacity-80">GMetrix Practice Test 222053</span>
+    </div>
+    <div class="flex bg-gray-100 border-b border-gray-300">
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">File</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2 bg-blue-600 text-white">Home</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">Insert</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">Draw</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">Design</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">Layout</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">References</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">Mailings</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">Review</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">View</div>
+      <div class="ribbon-tab text-gray-700 font-semibold text-xs hover:bg-blue-600 hover:text-white transition rounded-none px-4 py-2">Help</div>
+      <div class="ml-auto flex items-center px-4 gap-3">
+        <span class="text-xs text-gray-500 font-medium"><i class="fa-solid fa-comment-dots mr-1"></i>Comments</span>
+        <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">Editing ▾</span>
+        <span class="text-xs font-bold text-blue-700 bg-blue-600 text-white px-2 py-1 rounded"><i class="fa-solid fa-share-nodes mr-1"></i>Share</span>
+      </div>
+    </div>
+    <!-- Formatting bar mock -->
+    <div class="flex items-center gap-2 px-4 py-1 bg-white border-b border-gray-200 text-xs text-gray-600 overflow-x-auto">
+      <div class="flex gap-1 border-r border-gray-200 pr-3 mr-1">
+        <button class="p-1 hover:bg-gray-100 rounded" title="Bold"><i class="fa-solid fa-bold"></i></button>
+        <button class="p-1 hover:bg-gray-100 rounded" title="Italic"><i class="fa-solid fa-italic"></i></button>
+        <button class="p-1 hover:bg-gray-100 rounded" title="Underline"><i class="fa-solid fa-underline"></i></button>
+      </div>
+      <div class="flex gap-1 border-r border-gray-200 pr-3 mr-1">
+        <button class="p-1 hover:bg-gray-100 rounded"><i class="fa-solid fa-align-left"></i></button>
+        <button class="p-1 hover:bg-gray-100 rounded"><i class="fa-solid fa-align-center"></i></button>
+        <button class="p-1 hover:bg-gray-100 rounded"><i class="fa-solid fa-align-right"></i></button>
+        <button class="p-1 hover:bg-gray-100 rounded"><i class="fa-solid fa-align-justify"></i></button>
+      </div>
+      <div class="flex gap-1 border-r border-gray-200 pr-3 mr-1">
+        <select class="text-xs border border-gray-200 rounded px-1 py-0.5 focus:outline-none">
+          <option>Calibri</option><option>Times New Roman</option><option>Arial</option>
+        </select>
+        <select class="text-xs border border-gray-200 rounded px-1 py-0.5 w-14 focus:outline-none">
+          <option>11</option><option>12</option><option>14</option><option>16</option><option>18</option>
+        </select>
+      </div>
+      <div class="flex gap-1">
+        <button class="p-1 hover:bg-gray-100 rounded"><i class="fa-solid fa-list-ul"></i></button>
+        <button class="p-1 hover:bg-gray-100 rounded"><i class="fa-solid fa-list-ol"></i></button>
+        <button class="p-1 hover:bg-gray-100 rounded"><i class="fa-solid fa-table"></i></button>
+        <button class="p-1 hover:bg-gray-100 rounded"><i class="fa-solid fa-image"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document Content Area -->
+  <div class="flex-1 overflow-y-auto bg-gray-200 py-6 px-8" style="min-height:0;">
+    <div class="max-w-3xl mx-auto bg-white shadow-lg" style="min-height:500px;">
+      <!-- Header image mock -->
+      <div class="bg-gradient-to-r from-sky-200 to-sky-100 p-8 relative overflow-hidden" style="height:200px;">
+        <div class="absolute inset-0 flex items-center justify-between px-12">
+          <div style="font-family: cursive; font-size: 32px; color: #2563eb; opacity: 0.8; transform: rotate(-5deg);">Log Cabin Rentals</div>
+          <div class="w-48 h-40 bg-amber-100 rounded-full flex items-center justify-center overflow-hidden border-4 border-amber-200">
+            <i class="fa-solid fa-house-chimney text-6xl text-amber-600 opacity-70"></i>
+          </div>
+        </div>
+      </div>
+      <!-- Content -->
+      <div class="p-10">
+        <h1 class="text-4xl font-bold text-blue-500 text-center mb-6" style="font-family: Georgia, serif;">Lake Vacations</h1>
+        <p class="text-gray-700 leading-relaxed mb-6 text-base">We make lake vacations easy and fun. You bring your own powerboat, WaveRunners, or kayaks, and we provide you with lodging in a cozy log cabin! We help you prepare for your excursion, advise you on what to pack, and take care of all the little details we have already thought out for you so that you and your guests can have the most fun while making the best memories.</p>
+        <h2 class="text-2xl font-bold text-blue-600 mb-3" style="font-family: Georgia, serif;">Our Cabins</h2>
+        <p class="text-gray-700 leading-relaxed mb-4">Each of our cabins comes fully equipped with everything you need for a comfortable stay. From fully furnished kitchens to spacious bedrooms, we have thought of every detail to make your vacation perfect.</p>
+        <h2 class="text-2xl font-bold text-blue-600 mb-3" style="font-family: Georgia, serif;">Weekly Rental</h2>
+        <table class="w-full border-collapse border border-gray-300 text-sm mb-6">
+          <thead><tr class="bg-blue-50"><th class="border border-gray-300 px-3 py-2 text-left">Cabin Type</th><th class="border border-gray-300 px-3 py-2 text-left">Beds</th><th class="border border-gray-300 px-3 py-2 text-left">Weekly Rate</th><th class="border border-gray-300 px-3 py-2 text-left">Availability</th></tr></thead>
+          <tbody>
+            <tr><td class="border border-gray-300 px-3 py-2">Standard</td><td class="border border-gray-300 px-3 py-2">2</td><td class="border border-gray-300 px-3 py-2">$850</td><td class="border border-gray-300 px-3 py-2">Year-round</td></tr>
+            <tr class="bg-gray-50"><td class="border border-gray-300 px-3 py-2">Deluxe</td><td class="border border-gray-300 px-3 py-2">3</td><td class="border border-gray-300 px-3 py-2">$1,200</td><td class="border border-gray-300 px-3 py-2">Seasonal</td></tr>
+            <tr><td class="border border-gray-300 px-3 py-2">Premium</td><td class="border border-gray-300 px-3 py-2">4</td><td class="border border-gray-300 px-3 py-2">$1,800</td><td class="border border-gray-300 px-3 py-2">Summer only</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="bg-blue-600 text-white text-xs px-4 py-1 flex items-center gap-4">
+    <span>Section: 1</span><span>Page 1 of 2</span><span>360 words</span><span>English (United States)</span>
+    <span class="ml-auto flex items-center gap-2"><i class="fa-solid fa-magnifying-glass-plus"></i>170%</span>
+  </div>
+
+  <!-- ===== TASK CONTROL BAR ===== -->
+  <div class="bg-primary text-white" style="min-height:0;">
+    <!-- Top row: info + timer + actions -->
+    <div class="flex items-center px-4 py-2 border-b border-blue-700 gap-4">
+      <div class="flex items-center gap-2">
+        <button class="w-7 h-7 bg-blue-400 rounded-full text-xs flex items-center justify-center hover:bg-blue-300 transition" title="Help"><i class="fa-solid fa-question"></i></button>
+        <span class="text-sm font-bold text-blue-200">Aa</span>
+        <button class="w-7 h-7 bg-blue-400 rounded-full text-xs flex items-center justify-center hover:bg-blue-300 transition" title="Settings"><i class="fa-solid fa-gear"></i></button>
+      </div>
+      <div class="bg-blue-700 rounded-lg px-3 py-1">
+        <span class="text-blue-300 text-xs font-medium">Project </span>
+        <span id="project-label" class="text-white text-xs font-black">1 / 7</span>
+      </div>
+      <div class="flex-1 flex justify-center">
+        <div class="bg-blue-800 rounded-xl px-6 py-1 flex items-center gap-2">
+          <i class="fa-solid fa-clock text-blue-300 text-sm"></i>
+          <span id="timer-display" class="text-white">00:09:21</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-sm">
+        <button onclick="showSummary()" class="hover:text-blue-200 transition font-semibold text-xs flex items-center gap-1 px-2 py-1 hover:bg-blue-700 rounded"><i class="fa-solid fa-chart-bar"></i>Summary</button>
+        <button onclick="restartProject()" class="hover:text-blue-200 transition font-semibold text-xs flex items-center gap-1 px-2 py-1 hover:bg-blue-700 rounded"><i class="fa-solid fa-rotate-left"></i>Restart Project</button>
+        <button class="hover:text-blue-200 transition font-semibold text-xs flex items-center gap-1 px-2 py-1 hover:bg-blue-700 rounded"><i class="fa-solid fa-floppy-disk"></i>Save Project</button>
+        <button onclick="gradeProject()" class="bg-green-500 hover:bg-green-400 text-white font-bold text-xs px-4 py-1.5 rounded-lg transition flex items-center gap-1"><i class="fa-solid fa-star"></i>Grade Project</button>
+      </div>
+    </div>
+
+    <!-- Task tabs -->
+    <div class="task-bar py-2 gap-1">
+      <button class="task-btn active" onclick="selectTask(this, 'overview')">Overview</button>
+      <button id="task-btn-1" class="task-btn" onclick="selectTask(this, 1)">Task 1</button>
+      <button id="task-btn-2" class="task-btn" onclick="selectTask(this, 2)">Task 2</button>
+      <button id="task-btn-3" class="task-btn" onclick="selectTask(this, 3)">Task 3</button>
+      <button id="task-btn-4" class="task-btn" onclick="selectTask(this, 4)">Task 4</button>
+      <button id="task-btn-5" class="task-btn" onclick="selectTask(this, 5)">Task 5</button>
+      <button id="task-btn-6" class="task-btn" onclick="selectTask(this, 6)">Task 6</button>
+      <button id="task-btn-7" class="task-btn" onclick="selectTask(this, 7)">Task 7</button>
+    </div>
+
+    <!-- Task content -->
+    <div class="px-5 py-3 min-h-0" style="background:#1a306080;">
+      <div id="task-content">
+        <p class="text-blue-100 font-bold text-sm mb-1" id="task-title">Cabins</p>
+        <p class="text-blue-200 text-sm" id="task-desc">Your company rents cabins near a lake. You are editing a flyer to advertise the cabins to customers.</p>
+        <p class="text-blue-300 text-xs mt-1" id="task-id">Question ID: 43403</p>
+      </div>
+    </div>
+
+    <!-- Bottom action buttons -->
+    <div class="flex items-center gap-2 px-4 py-2 bg-blue-900 border-t border-blue-700">
+      <button onclick="prevTask()" class="bg-gray-500 hover:bg-gray-400 text-white font-bold text-xs px-5 py-2 rounded-lg transition flex items-center gap-1">
+        <i class="fa-solid fa-chevron-left"></i>Previous Task
+      </button>
+      <button onclick="markCompleted()" class="bg-green-500 hover:bg-green-400 text-white font-bold text-xs px-5 py-2 rounded-lg transition flex items-center gap-1">
+        <i class="fa-solid fa-check-circle"></i>Mark Completed
+      </button>
+      <button onclick="markForReview()" class="bg-amber-500 hover:bg-amber-400 text-white font-bold text-xs px-5 py-2 rounded-lg transition flex items-center gap-1">
+        <i class="fa-solid fa-flag"></i>Mark for Review
+      </button>
+      <button onclick="nextTask()" class="bg-primary-light hover:bg-blue-500 text-white font-bold text-xs px-5 py-2 rounded-lg transition flex items-center gap-1 ml-auto">
+        Next Task<i class="fa-solid fa-chevron-right"></i>
+      </button>
+      <button onclick="showHelpModal()" class="bg-blue-500 hover:bg-blue-400 text-white font-bold text-xs px-5 py-2 rounded-lg transition flex items-center gap-1">
+        <i class="fa-solid fa-lightbulb"></i>Help <i class="fa-solid fa-question text-xs"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: HELP ==================== -->
+<div id="modal-help" class="modal-overlay hidden">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg mx-4 fade-in">
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-lightbulb text-blue-500 text-lg"></i></div>
+      <div>
+        <h2 class="text-base font-black text-gray-800">Help – Task Guidance</h2>
+        <p class="text-xs text-gray-400 font-medium" id="help-task-name">Task 5: Cabins</p>
+      </div>
+      <button onclick="closeModal('modal-help')" class="ml-auto w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"><i class="fa-solid fa-times text-gray-500 text-sm"></i></button>
+    </div>
+    <div id="help-content" class="bg-blue-50 rounded-xl p-5 text-sm text-gray-700 leading-relaxed space-y-3">
+      <p class="font-semibold text-blue-700">Step-by-step guide:</p>
+      <ol class="space-y-2 list-none">
+        <li class="flex gap-3"><span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span><span>On the last page below the heading <strong>Weekly Rental</strong>, select all of the rows in the table by clicking the table selector in the upper-left corner of the table (the + symbol).</span></li>
+        <li class="flex gap-3"><span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span><span>Click the <strong>Table Tools Layout</strong> tab.</span></li>
+        <li class="flex gap-3"><span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span><span>In the <strong>Data</strong> group, click <strong>Convert to Text</strong>.</span></li>
+      </ol>
+    </div>
+    <button onclick="closeModal('modal-help')" class="mt-5 w-full bg-accent hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition">Got it!</button>
+  </div>
+</div>
+
+<!-- ==================== MODAL: SUMMARY ==================== -->
+<div id="modal-summary" class="modal-overlay hidden">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 fade-in">
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-chart-bar text-green-500 text-lg"></i></div>
+      <h2 class="text-base font-black text-gray-800">Test Summary</h2>
+      <button onclick="closeModal('modal-summary')" class="ml-auto w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"><i class="fa-solid fa-times text-gray-500 text-sm"></i></button>
+    </div>
+    <div class="space-y-3 mb-6">
+      <div class="flex items-center justify-between py-2 border-b border-gray-100">
+        <span class="text-sm text-gray-600 font-medium">Total Tasks</span><span class="font-black text-gray-800">7</span>
+      </div>
+      <div class="flex items-center justify-between py-2 border-b border-gray-100">
+        <span class="text-sm text-gray-600 font-medium flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i>Completed</span><span id="summary-completed" class="font-black text-green-600">0</span>
+      </div>
+      <div class="flex items-center justify-between py-2 border-b border-gray-100">
+        <span class="text-sm text-gray-600 font-medium flex items-center gap-2"><i class="fa-solid fa-flag text-amber-500"></i>Marked for Review</span><span id="summary-review" class="font-black text-amber-600">0</span>
+      </div>
+      <div class="flex items-center justify-between py-2">
+        <span class="text-sm text-gray-600 font-medium flex items-center gap-2"><i class="fa-solid fa-circle text-gray-300"></i>Not Started</span><span id="summary-pending" class="font-black text-gray-500">7</span>
+      </div>
+    </div>
+    <button onclick="closeModal('modal-summary')" class="w-full bg-accent hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition">Close</button>
+  </div>
+</div>
+
+<!-- ==================== MODAL: GRADE ==================== -->
+<div id="modal-grade" class="modal-overlay hidden">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 fade-in text-center">
+    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-star text-yellow-400 text-3xl"></i></div>
+    <h2 class="text-xl font-black text-gray-800 mb-1">Project Graded!</h2>
+    <p class="text-gray-500 text-sm mb-6">Word Associate 2019 Practice Exam 1</p>
+    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 mb-6">
+      <p class="text-5xl font-black text-primary" id="grade-score">720</p>
+      <p class="text-gray-500 text-sm mt-1">out of 1000</p>
+      <div class="w-full bg-gray-200 rounded-full h-3 mt-3">
+        <div class="bg-green-500 h-3 rounded-full" id="grade-bar" style="width:72%"></div>
+      </div>
+      <div class="flex justify-between mt-1"><span class="text-xs text-gray-400">0</span><span class="text-xs font-semibold text-green-600">Passing: 700</span><span class="text-xs text-gray-400">1000</span></div>
+    </div>
+    <p class="text-green-600 font-black text-lg mb-5"><i class="fa-solid fa-check-circle mr-2"></i>PASSED!</p>
+    <div class="flex gap-3">
+      <button onclick="closeModal('modal-grade'); showScreen('screen-exam-list')" class="flex-1 border border-gray-300 text-gray-600 font-bold py-3 rounded-xl text-sm hover:bg-gray-50 transition">Back to Exams</button>
+      <button onclick="closeModal('modal-grade')" class="flex-1 bg-accent hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition">Review Answers</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentTask = 'overview';
+let taskStatus = {}; // 1-7: 'completed'|'review'|null
+let timerInterval = null;
+let timerSeconds = 9 * 60 + 21;
+
+const tasks = {
+  overview: { title: 'Project Overview', desc: 'Your company rents cabins near a lake. You are editing a flyer to advertise the cabins to customers.', id: '' },
+  1: { title: 'Header Image', desc: 'Insert the picture file LogCabinHeader.jpg from the Documents folder. Position the picture at the top of the document.', id: 'Question ID: 43401' },
+  2: { title: 'Title Formatting', desc: 'Apply the Title style to the text "Lake Vacations" on the first page of the document.', id: 'Question ID: 43402' },
+  3: { title: 'Font Color', desc: 'Change the font color of the title "Lake Vacations" to Blue, Accent 1 (the 5th color in the top row of Theme Colors).', id: 'Question ID: 43403' },
+  4: { title: 'Table Border', desc: 'Apply an outside border to the table on the last page of the document using Blue, Accent 1 color with a 2.25pt line width.', id: 'Question ID: 43404' },
+  5: { title: 'Cabins', desc: 'On the last page below the heading Weekly Rental, convert the table to text. Use tabs to separate the text.', id: 'Question ID: 43403' },
+  6: { title: 'Page Numbers', desc: 'Insert page numbers at the bottom center of each page. Start numbering at page 1.', id: 'Question ID: 43405' },
+  7: { title: 'Save as PDF', desc: 'Save the document as a PDF file named LakeVacations.pdf in the Documents folder.', id: 'Question ID: 43406' },
+};
+
+const helpTexts = {
+  overview: [{ step: 'Read all tasks', detail: 'Review all tasks in the Overview before starting. This gives you a roadmap of what needs to be done.' }],
+  1: [{ step: 'Go to Insert tab', detail: 'Click the Insert tab in the ribbon.' }, { step: 'Click Pictures', detail: 'In the Illustrations group, click Pictures → This Device.' }, { step: 'Select file', detail: 'Navigate to Documents folder and select LogCabinHeader.jpg. Click Insert.' }],
+  2: [{ step: 'Select the text', detail: 'Click on the text "Lake Vacations" and select all of it.' }, { step: 'Apply Title style', detail: 'In the Home tab, Styles group, click the "Title" style.' }],
+  3: [{ step: 'Select "Lake Vacations"', detail: 'Highlight the title text on the first page.' }, { step: 'Open Font Color', detail: 'Home tab → Font group → click the arrow next to Font Color (A with color bar).' }, { step: 'Choose color', detail: 'Select Blue, Accent 1 — 5th color in the top row of Theme Colors.' }],
+  4: [{ step: 'Click in the table', detail: 'Click anywhere inside the table on the last page.' }, { step: 'Table Design tab', detail: 'Go to Table Tools → Table Design tab.' }, { step: 'Borders', detail: 'Click Borders → Borders and Shading. Set color to Blue Accent 1, width 2.25pt, click Outside Border.' }],
+  5: [{ step: 'Select all table rows', detail: 'Click the + selector in the upper-left corner of the Weekly Rental table.' }, { step: 'Table Tools Layout tab', detail: 'Click the Table Tools Layout tab in the ribbon.' }, { step: 'Convert to Text', detail: 'In the Data group, click Convert to Text. Choose Tabs as separator.' }],
+  6: [{ step: 'Insert tab', detail: 'Click the Insert tab in the ribbon.' }, { step: 'Page Number', detail: 'In the Header & Footer group, click Page Number → Bottom of Page.' }, { step: 'Choose center style', detail: 'Select "Plain Number 2" for centered page numbers.' }],
+  7: [{ step: 'File → Save As', detail: 'Click File tab, then Save As.' }, { step: 'Choose PDF format', detail: 'In Save as type dropdown, select PDF (*.pdf).' }, { step: 'Name and save', detail: 'Enter "LakeVacations" as the file name, navigate to Documents folder, click Save.' }],
+};
+
+// ===== SCREEN NAVIGATION =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goToHome() { showScreen('screen-home'); stopTimer(); }
+function goToRegister() { showScreen('screen-register'); }
+function goToExamList() { showScreen('screen-exam-list'); stopTimer(); }
+function goToExamStart() { showScreen('screen-exam-start'); stopTimer(); }
+
+// ===== MODAL =====
+function openNewTestModal() { document.getElementById('modal-new-test').classList.remove('hidden'); }
+function closeNewTestModal() { document.getElementById('modal-new-test').classList.add('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+document.getElementById('test-mode-select').addEventListener('change', function() {
+  const desc = document.getElementById('mode-desc');
+  if (this.value === 'Testing') desc.textContent = 'Testing mode does not provide detailed feedback on answers.';
+  else desc.textContent = 'Training mode provides hints and feedback after each task.';
+});
+
+// ===== START EXAM =====
+function startExam() {
+  closeNewTestModal();
+  taskStatus = {};
+  timerSeconds = 50 * 60;
+  currentTask = 'overview';
+  selectTask(document.querySelector('.task-btn.active'), 'overview');
+  document.querySelectorAll('.task-btn').forEach(b => { b.classList.remove('active', 'completed', 'review'); if (b.textContent === 'Overview') b.classList.add('active'); });
+  showScreen('screen-exam');
+  startTimer();
+}
+
+// ===== TIMER =====
+function startTimer() {
+  stopTimer();
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+    const s = String(timerSeconds % 60).padStart(2, '0');
+    document.getElementById('timer-display').textContent = `00:${m}:${s}`;
+  }, 1000);
+}
+function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+
+// ===== TASK NAVIGATION =====
+function selectTask(btn, taskKey) {
+  document.querySelectorAll('.task-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  currentTask = taskKey;
+  const t = tasks[taskKey] || tasks['overview'];
+  document.getElementById('task-title').textContent = t.title;
+  document.getElementById('task-desc').textContent = t.desc;
+  document.getElementById('task-id').textContent = t.id;
+  const label = taskKey === 'overview' ? 'Overview' : `Task ${taskKey}`;
+  document.getElementById('help-task-name').textContent = `${label}: ${t.title}`;
+}
+
+function getTaskNumber() {
+  if (currentTask === 'overview') return 0;
+  return parseInt(currentTask);
+}
+
+function nextTask() {
+  const n = getTaskNumber();
+  if (n < 7) {
+    const nextKey = n === 0 ? 1 : n + 1;
+    const btn = document.getElementById(`task-btn-${nextKey}`);
+    selectTask(btn, nextKey);
+  }
+}
+
+function prevTask() {
+  const n = getTaskNumber();
+  if (n > 1) {
+    const btn = document.getElementById(`task-btn-${n - 1}`);
+    selectTask(btn, n - 1);
+  } else if (n === 1) {
+    const btn = document.querySelector('.task-btn');
+    selectTask(btn, 'overview');
+  }
+}
+
+// ===== MARK FUNCTIONS =====
+function markCompleted() {
+  if (currentTask === 'overview') return;
+  const n = getTaskNumber();
+  const btn = document.getElementById(`task-btn-${n}`);
+  taskStatus[n] = 'completed';
+  btn.className = 'task-btn completed';
+  showToast('<i class="fa-solid fa-check-circle mr-2"></i>Task marked as completed!', 'green');
+}
+
+function markForReview() {
+  if (currentTask === 'overview') return;
+  const n = getTaskNumber();
+  const btn = document.getElementById(`task-btn-${n}`);
+  taskStatus[n] = 'review';
+  btn.className = 'task-btn review';
+  showToast('<i class="fa-solid fa-flag mr-2"></i>Task marked for review!', 'amber');
+}
+
+// ===== HELP MODAL =====
+function showHelpModal() {
+  const helpData = helpTexts[currentTask] || helpTexts['overview'];
+  const t = tasks[currentTask] || tasks['overview'];
+  const label = currentTask === 'overview' ? 'Overview' : `Task ${currentTask}`;
+  document.getElementById('help-task-name').textContent = `${label}: ${t.title}`;
+  const html = helpData.map((item, i) => `
+    <li class="flex gap-3">
+      <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">${i + 1}</span>
+      <span><strong>${item.step}:</strong> ${item.detail}</span>
+    </li>`).join('');
+  document.getElementById('help-content').innerHTML = `<p class="font-semibold text-blue-700">Step-by-step guide:</p><ol class="space-y-2 list-none">${html}</ol>`;
+  document.getElementById('modal-help').classList.remove('hidden');
+}
+
+// ===== SUMMARY =====
+function showSummary() {
+  const completed = Object.values(taskStatus).filter(v => v === 'completed').length;
+  const review = Object.values(taskStatus).filter(v => v === 'review').length;
+  const pending = 7 - completed - review;
+  document.getElementById('summary-completed').textContent = completed;
+  document.getElementById('summary-review').textContent = review;
+  document.getElementById('summary-pending').textContent = pending;
+  document.getElementById('modal-summary').classList.remove('hidden');
+}
+
+// ===== GRADE =====
+function gradeProject() {
+  const completed = Object.values(taskStatus).filter(v => v === 'completed').length;
+  const score = Math.min(1000, 400 + completed * 100 + Math.floor(Math.random() * 80));
+  document.getElementById('grade-score').textContent = score;
+  document.getElementById('grade-bar').style.width = (score / 10) + '%';
+  document.getElementById('modal-grade').classList.remove('hidden');
+  stopTimer();
+}
+
+// ===== RESTART =====
+function restartProject() {
+  if (!confirm('Are you sure you want to restart this project? All progress will be lost.')) return;
+  taskStatus = {};
+  timerSeconds = 0;
+  document.querySelectorAll('.task-btn').forEach(b => { b.className = 'task-btn'; if (b.textContent === 'Overview') { b.classList.add('active'); } });
+  selectTask(document.querySelector('.task-btn'), 'overview');
+  showToast('<i class="fa-solid fa-rotate-left mr-2"></i>Project restarted!', 'blue');
+}
+
+// ===== TOAST =====
+function showToast(msg, color) {
+  const colors = { green: 'bg-green-500', amber: 'bg-amber-500', blue: 'bg-blue-500' };
+  const toast = document.createElement('div');
+  toast.className = `fixed bottom-24 left-1/2 -translate-x-1/2 ${colors[color]} text-white px-6 py-3 rounded-full text-sm font-semibold shadow-lg z-50 transition-all`;
+  toast.innerHTML = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 2000);
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+});
+</script>
+</body>
+</html>
